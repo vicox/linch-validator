@@ -37,10 +37,6 @@ public class Property {
         return stringValue;
     }
 
-    public void setStringValue(StringValue stringValue) {
-        this.stringValue = stringValue;
-    }
-
     public Object getParsedValue() {
         return parsedValue;
     }
