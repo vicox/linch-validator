@@ -1,0 +1,1 @@
+# linch-validator [![Build Status](https://travis-ci.org/linchproject/linch-validator.svg)](https://travis-ci.org/linchproject/linch-validator)
