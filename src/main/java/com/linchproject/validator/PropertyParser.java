@@ -3,7 +3,7 @@ package com.linchproject.validator;
 /**
  * @author Georg Schmidl
  */
-public interface Parser<T> {
+public interface PropertyParser<T> {
 
     T parse(StringValue stringValue) throws ParseException;
 

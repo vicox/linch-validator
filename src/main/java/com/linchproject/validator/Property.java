@@ -45,8 +45,8 @@ public class Property {
         return parsedValue;
     }
 
-    public void parse(Parser parser) throws ParseException{
-        this.parsedValue = parser.parse(this.stringValue);
+    public void parse(PropertyParser propertyParser) throws ParseException{
+        this.parsedValue = propertyParser.parse(this.stringValue);
         this.parsed = true;
     }
 

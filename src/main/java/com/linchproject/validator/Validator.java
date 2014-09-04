@@ -1,7 +1,7 @@
 package com.linchproject.validator;
 
-import com.linchproject.validator.parser.IntegerParser;
-import com.linchproject.validator.parser.StringParser;
+import com.linchproject.validator.parser.IntegerPropertyParser;
+import com.linchproject.validator.parser.StringPropertyParser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,9 +18,9 @@ public class Validator {
 
     private Set<String> required = new HashSet<String>();
 
-    private Map<Class<?>, Parser> parsers = new HashMap<Class<?>, Parser>() {{
-        put(String.class, new StringParser());
-        put(Integer.class, new IntegerParser());
+    private Map<Class<?>, PropertyParser> parsers = new HashMap<Class<?>, PropertyParser>() {{
+        put(String.class, new StringPropertyParser());
+        put(Integer.class, new IntegerPropertyParser());
     }};
 
     private Map<String, Set<PropertyValidator>> validators = new HashMap<String, Set<PropertyValidator>>();
@@ -51,15 +51,15 @@ public class Validator {
             }
 
             // parser missing errors
-            Parser parser = this.parsers.get(propertyClass);
-            if (parser == null) {
+            PropertyParser propertyParser = this.parsers.get(propertyClass);
+            if (propertyParser == null) {
                 errors.put(property.getName(), PARSER_MISSING_ERROR);
                 break;
             }
 
             // parse errors
             try {
-                property.parse(parser);
+                property.parse(propertyParser);
             } catch (ParseException e) {
                 errors.put(property.getName(), PARSE_ERROR);
                 break;
@@ -85,8 +85,8 @@ public class Validator {
         return this;
     }
 
-    public Validator addParser(Class<?> propertyType, Parser parser) {
-        this.parsers.put(propertyType, parser);
+    public Validator addParser(Class<?> propertyType, PropertyParser propertyParser) {
+        this.parsers.put(propertyType, propertyParser);
         return this;
     }
 
@@ -125,11 +125,11 @@ public class Validator {
                         Method setter = objectClass.getMethod(getSetterName(fieldName), fieldType);
 
                         if (!property.isParsed()) {
-                            Parser parser = this.parsers.get(fieldType);
-                            if (parser == null) {
+                            PropertyParser propertyParser = this.parsers.get(fieldType);
+                            if (propertyParser == null) {
                                 throw new ParserNotFoundException("parser not found for " + fieldType);
                             }
-                            property.parse(parser);
+                            property.parse(propertyParser);
                         }
 
                         Object parsedValue = property.getParsedValue();

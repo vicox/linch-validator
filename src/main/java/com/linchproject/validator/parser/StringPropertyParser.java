@@ -5,7 +5,7 @@ import com.linchproject.validator.*;
 /**
  * @author Georg Schmidl
  */
-public class StringParser implements Parser<String> {
+public class StringPropertyParser implements PropertyParser<String> {
 
     @Override
     public String parse(StringValue stringValue) throws ParseException {
