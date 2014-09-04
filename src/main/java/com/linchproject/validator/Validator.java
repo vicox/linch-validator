@@ -50,19 +50,22 @@ public class Validator {
                 propertyClass = String.class;
             }
 
-            // parser missing errors
-            PropertyParser propertyParser = this.parsers.get(propertyClass);
-            if (propertyParser == null) {
-                errors.put(property.getName(), PARSER_MISSING_ERROR);
-                break;
-            }
+            if (!property.isParsed()) {
 
-            // parse errors
-            try {
-                property.parse(propertyParser);
-            } catch (ParseException e) {
-                errors.put(property.getName(), PARSE_ERROR);
-                break;
+                // parser missing errors
+                PropertyParser propertyParser = this.parsers.get(propertyClass);
+                if (propertyParser == null) {
+                    errors.put(property.getName(), PARSER_MISSING_ERROR);
+                    break;
+                }
+
+                // parse errors
+                try {
+                    property.parse(propertyParser);
+                } catch (ParseException e) {
+                    errors.put(property.getName(), PARSE_ERROR);
+                    break;
+                }
             }
 
             // validation errors
