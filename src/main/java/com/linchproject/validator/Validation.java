@@ -60,6 +60,19 @@ public class Validation {
         return data;
     }
 
+    public Data create(Class<?> clazz) {
+        Data data = new Data(this);
+
+        for (Method method: clazz.getDeclaredMethods()) {
+            if (Reflection.isGetter(method)) {
+                String fieldName = Reflection.getNameFromGetter(method.getName());
+                data.addProperty(fieldName);
+            }
+        }
+
+        return data;
+    }
+
     public Validation setRequired(String propertyName) {
         this.required.add(propertyName);
         return this;

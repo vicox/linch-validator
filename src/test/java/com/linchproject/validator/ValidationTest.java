@@ -22,6 +22,10 @@ public class ValidationTest extends TestCase {
         data = validation.create(a);
         assertEquals(1, data.getProperties().size());
         assertEquals("b", data.getProperties().get("a").getValue());
+
+        data = validation.create(A.class);
+        assertEquals(1, data.getProperties().size());
+        assertNull(data.getProperties().get("a").getValue());
     }
 
     public class A {
