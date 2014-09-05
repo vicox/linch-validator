@@ -60,29 +60,6 @@ public class Validator {
         return data;
     }
 
-    public void write(Data data, Object object) {
-        for (Method method: object.getClass().getDeclaredMethods()) {
-            if (Reflection.isSetter(method)) {
-                String fieldName = Reflection.getNameFromSetter(method.getName());
-                Class<?> fieldType = method.getParameterTypes()[0];
-
-                Property property = data.getProperties().get(fieldName);
-
-                if (property != null) {
-                    Object parsed = property.getParsed();
-
-                    try {
-                        method.invoke(object, parsed);
-                    } catch (IllegalAccessException e) {
-                        // ignore
-                    } catch (InvocationTargetException e) {
-                        // ignore
-                    }
-                }
-            }
-        }
-    }
-
     public Validator setRequired(String propertyName) {
         this.required.add(propertyName);
         return this;

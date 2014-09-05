@@ -1,5 +1,7 @@
 package com.linchproject.validator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -42,6 +44,28 @@ public class Data {
 
         this.validated = true;
         return this;
+    }
+
+    public void dump(Object object) {
+        for (Method method: object.getClass().getDeclaredMethods()) {
+            if (Reflection.isSetter(method)) {
+                String fieldName = Reflection.getNameFromSetter(method.getName());
+
+                Property property = this.getProperties().get(fieldName);
+
+                if (property != null) {
+                    Object parsed = property.getParsed();
+
+                    try {
+                        method.invoke(object, parsed);
+                    } catch (IllegalAccessException e) {
+                        // ignore
+                    } catch (InvocationTargetException e) {
+                        // ignore
+                    }
+                }
+            }
+        }
     }
 
     public Validator getValidator() {
