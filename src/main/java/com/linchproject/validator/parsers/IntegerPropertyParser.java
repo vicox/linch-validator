@@ -1,4 +1,4 @@
-package com.linchproject.validator.parser;
+package com.linchproject.validator.parsers;
 
 import com.linchproject.validator.*;
 

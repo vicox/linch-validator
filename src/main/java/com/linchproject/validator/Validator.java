@@ -1,7 +1,7 @@
 package com.linchproject.validator;
 
-import com.linchproject.validator.parser.IntegerPropertyParser;
-import com.linchproject.validator.parser.StringPropertyParser;
+import com.linchproject.validator.parsers.IntegerPropertyParser;
+import com.linchproject.validator.parsers.StringPropertyParser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -152,7 +152,7 @@ public class Validator {
                     if (!property.isParsed()) {
                         PropertyParser propertyParser = this.parsers.get(fieldType);
                         if (propertyParser == null) {
-                            throw new ParserNotFoundException("parser not found for " + fieldType);
+                            throw new ParserNotFoundException("parsers not found for " + fieldType);
                         }
                         property.parse(propertyParser);
                     }
