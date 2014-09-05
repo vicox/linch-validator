@@ -42,7 +42,7 @@ public class Property {
     }
 
     public void parse(PropertyParser propertyParser) throws ParseException{
-        this.parsedValue = propertyParser.parse(this.stringValue);
+        this.parsedValue = propertyParser.parse(this);
         this.parsed = true;
     }
 

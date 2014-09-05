@@ -7,7 +7,8 @@ import com.linchproject.validator.*;
  */
 public class IntegerPropertyParser implements PropertyParser<Integer> {
     @Override
-    public Integer parse(StringValue stringValue) throws ParseException {
+    public Integer parse(Property property) throws ParseException {
+        StringValue stringValue = property.getStringValue();
         try {
             return stringValue == null ? null : Integer.parseInt(stringValue.get());
         } catch (NumberFormatException e) {

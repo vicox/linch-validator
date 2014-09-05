@@ -8,8 +8,8 @@ import com.linchproject.validator.*;
 public class StringPropertyParser implements PropertyParser<String> {
 
     @Override
-    public String parse(StringValue stringValue) throws ParseException {
-        return stringValue.get();
+    public String parse(Property property) throws ParseException {
+        return property.getStringValue().get();
     }
 
     @Override
