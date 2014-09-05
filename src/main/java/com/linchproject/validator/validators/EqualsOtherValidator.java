@@ -1,18 +1,18 @@
 package com.linchproject.validator.validators;
 
 import com.linchproject.validator.Property;
-import com.linchproject.validator.PropertyValidator;
+import com.linchproject.validator.Validator;
 
 import java.util.Arrays;
 
 /**
  * @author Georg Schmidl
  */
-public class EqualsOtherPropertyValidator implements PropertyValidator {
+public class EqualsOtherValidator implements Validator {
 
     private String propertyKey;
 
-    public EqualsOtherPropertyValidator(String propertyKey) {
+    public EqualsOtherValidator(String propertyKey) {
         this.propertyKey = propertyKey;
     }
 

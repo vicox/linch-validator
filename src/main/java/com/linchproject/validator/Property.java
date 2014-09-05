@@ -55,7 +55,7 @@ public class Property implements Iterable<String> {
     }
 
     public String validate(Class<?> clazz) {
-        if (this.data.getValidator().getRequired().contains(this.getName()) && this.isEmpty()) {
+        if (this.data.getValidation().getRequired().contains(this.getName()) && this.isEmpty()) {
             return REQUIRED_ERROR;
         }
 
@@ -65,14 +65,14 @@ public class Property implements Iterable<String> {
         }
 
         if (!this.isParsed()) {
-            PropertyParser propertyParser = this.data.getValidator().getParsers().get(propertyClass);
-            if (propertyParser == null) {
+            Parser parser = this.data.getValidation().getParsers().get(propertyClass);
+            if (parser == null) {
                 return PARSER_MISSING_ERROR;
 
             }
 
             try {
-                this.parsed = propertyParser.parse(this);
+                this.parsed = parser.parse(this);
                 this.isParsed = true;
 
             } catch (ParseException e) {
@@ -80,11 +80,11 @@ public class Property implements Iterable<String> {
             }
         }
 
-        Set<PropertyValidator> propertyValidators = this.data.getValidator().getValidators().get(this.getName());
-        if (propertyValidators != null) {
-            for (PropertyValidator propertyValidator : propertyValidators) {
-                if (!propertyValidator.isValid(this)) {
-                    return propertyValidator.getKey();
+        Set<Validator> validators = this.data.getValidation().getValidators().get(this.getName());
+        if (validators != null) {
+            for (Validator validator : validators) {
+                if (!validator.isValid(this)) {
+                    return validator.getKey();
                 }
             }
         }

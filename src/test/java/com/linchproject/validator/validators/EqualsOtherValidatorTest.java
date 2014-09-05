@@ -4,7 +4,7 @@ import com.linchproject.validator.Data;
 import com.linchproject.validator.Property;
 import junit.framework.TestCase;
 
-public class EqualsOtherPropertyValidatorTest extends TestCase {
+public class EqualsOtherValidatorTest extends TestCase {
 
     public void testIsValid() throws Exception {
         Data data;
@@ -12,10 +12,10 @@ public class EqualsOtherPropertyValidatorTest extends TestCase {
 
         data = new Data(null).addProperty("c", "d");
         property = new Property(data, "a", "b");
-        assertFalse(new EqualsOtherPropertyValidator("c").isValid(property));
+        assertFalse(new EqualsOtherValidator("c").isValid(property));
 
         data = new Data(null).addProperty("c", "b");
         property = new Property(data, "a", "b");
-        assertTrue(new EqualsOtherPropertyValidator("c").isValid(property));
+        assertTrue(new EqualsOtherValidator("c").isValid(property));
     }
 }

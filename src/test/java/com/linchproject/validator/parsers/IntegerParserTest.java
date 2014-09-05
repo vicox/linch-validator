@@ -3,14 +3,14 @@ package com.linchproject.validator.parsers;
 import com.linchproject.validator.Property;
 import junit.framework.TestCase;
 
-public class IntegerPropertyParserTest extends TestCase {
+public class IntegerParserTest extends TestCase {
 
     public void testParse() throws Exception {
         Property property = new Property(null, "test", "1");
-        assertEquals(Integer.valueOf(1), new IntegerPropertyParser().parse(property));
+        assertEquals(Integer.valueOf(1), new IntegerParser().parse(property));
     }
 
     public void testToStringArray() throws Exception {
-        assertEquals("1", new IntegerPropertyParser().toStringArray(1)[0]);
+        assertEquals("1", new IntegerParser().toStringArray(1)[0]);
     }
 }

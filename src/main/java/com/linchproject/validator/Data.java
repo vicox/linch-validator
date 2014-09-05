@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class Data {
 
-    private Validator validator;
+    private Validation validation;
 
     private Map<String, Property> properties = new LinkedHashMap<String, Property>();
 
@@ -18,8 +18,8 @@ public class Data {
 
     private boolean validated;
 
-    public Data(Validator validator) {
-        this.validator = validator;
+    public Data(Validation validation) {
+        this.validation = validation;
     }
 
     public Data validate(Class<?> clazz) {
@@ -30,7 +30,7 @@ public class Data {
             }
         }
 
-        for (String requiredPropertyName : this.validator.getRequired()) {
+        for (String requiredPropertyName : this.validation.getRequired()) {
             Property property = this.properties.get(requiredPropertyName);
             if (property == null) {
                 property = new Property(this, requiredPropertyName);
@@ -68,8 +68,8 @@ public class Data {
         }
     }
 
-    public Validator getValidator() {
-        return validator;
+    public Validation getValidation() {
+        return validation;
     }
 
     public boolean isValidated() {

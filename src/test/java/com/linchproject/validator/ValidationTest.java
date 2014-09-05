@@ -5,21 +5,21 @@ import junit.framework.TestCase;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ValidatorTest extends TestCase {
+public class ValidationTest extends TestCase {
 
     public void testCreate() throws Exception {
-        Validator validator = new Validator();
+        Validation validation = new Validation();
         Data data;
 
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        data = validator.create(map);
+        data = validation.create(map);
         assertEquals(1, data.getProperties().size());
         assertEquals("b", data.getProperties().get("a").getValue());
 
         A a = new A();
         a.setA("b");
-        data = validator.create(a);
+        data = validation.create(a);
         assertEquals(1, data.getProperties().size());
         assertEquals("b", data.getProperties().get("a").getValue());
     }

@@ -1,12 +1,12 @@
 package com.linchproject.validator.validators;
 
 import com.linchproject.validator.Property;
-import com.linchproject.validator.PropertyValidator;
+import com.linchproject.validator.Validator;
 
 /**
  * @author Georg Schmidl
  */
-public class EmailPropertyValidator implements PropertyValidator {
+public class EmailValidator implements Validator {
 
     @Override
     public String getKey() {
