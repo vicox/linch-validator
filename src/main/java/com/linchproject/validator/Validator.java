@@ -126,8 +126,8 @@ public class Validator {
 
                 try {
                     Object valueObject = method.invoke(object);
-                    String[] stringValues = propertyParser.toStringArray(valueObject);
-                    data.addProperty(fieldName, stringValues);
+                    String[] values = propertyParser.toStringArray(valueObject);
+                    data.addProperty(fieldName, values);
 
                 } catch (IllegalAccessException e) {
                     // ignore
@@ -157,10 +157,10 @@ public class Validator {
                         property.parse(propertyParser);
                     }
 
-                    Object parsedValue = property.getParsedValue();
+                    Object parsed = property.getParsed();
 
                     try {
-                        method.invoke(object, parsedValue);
+                        method.invoke(object, parsed);
                     } catch (IllegalAccessException e) {
                         // ignore
                     } catch (InvocationTargetException e) {

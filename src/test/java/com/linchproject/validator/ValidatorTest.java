@@ -15,13 +15,13 @@ public class ValidatorTest extends TestCase {
         map.put("a", new String[]{"b"});
         data = validator.read(map);
         assertEquals(1, data.size());
-        assertEquals("b", data.get("a").getStringValue());
+        assertEquals("b", data.get("a").getValue());
 
         A a = new A();
         a.setA("b");
         data = validator.read(a);
         assertEquals(1, data.size());
-        assertEquals("b", data.get("a").getStringValue());
+        assertEquals("b", data.get("a").getValue());
     }
 
     public void testValidate() throws Exception {

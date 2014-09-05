@@ -12,11 +12,11 @@ public class Property implements Iterable<String> {
 
     private String name;
 
-    private String[] stringValues;
+    private String[] values;
 
-    private Object parsedValue;
+    private Object parsed;
 
-    private boolean parsed = false;
+    private boolean isParsed = false;
 
     public Property(Data data, String name) {
         this.data = data;
@@ -25,12 +25,12 @@ public class Property implements Iterable<String> {
 
     public Property(Data data, String name, String[] values) {
         this(data, name);
-        this.stringValues = values;
+        this.values = values;
     }
 
     public Property(Data data, String name, String value) {
         this(data, name);
-        this.stringValues = new String[] { value };
+        this.values = new String[] { value };
     }
 
     public Data getData() {
@@ -41,31 +41,31 @@ public class Property implements Iterable<String> {
         return name;
     }
 
-    public String getStringValue() {
-        return this.stringValues != null &&  this.stringValues.length > 0 ? this.stringValues[0] : null;
+    public String getValue() {
+        return this.values != null &&  this.values.length > 0 ? this.values[0] : null;
     }
 
-    public String[] getStringValues() {
-        return this.stringValues;
+    public String[] getValues() {
+        return this.values;
     }
 
-    public Object getParsedValue() {
-        return parsedValue;
+    public Object getParsed() {
+        return parsed;
     }
 
     public void parse(PropertyParser propertyParser) throws ParseException{
-        this.parsedValue = propertyParser.parse(this);
-        this.parsed = true;
+        this.parsed = propertyParser.parse(this);
+        this.isParsed = true;
     }
 
     public boolean isParsed() {
-        return parsed;
+        return isParsed;
     }
 
     boolean isEmpty() {
         boolean isEmpty = true;
-        if (this.stringValues != null) {
-            for (String value: this.stringValues) {
+        if (this.values != null) {
+            for (String value: this.values) {
                 if (value != null && value.length() > 0) {
                     isEmpty = false;
                     break;
@@ -77,11 +77,11 @@ public class Property implements Iterable<String> {
 
     @Override
     public Iterator<String> iterator() {
-        return Arrays.asList(this.stringValues).iterator();
+        return Arrays.asList(this.values).iterator();
     }
 
     @Override
     public String toString() {
-        return getStringValue();
+        return getValue();
     }
 }

@@ -9,7 +9,7 @@ public class IntegerPropertyParser implements PropertyParser<Integer> {
     @Override
     public Integer parse(Property property) throws ParseException {
         try {
-            return property.getStringValue() == null ? null : Integer.parseInt(property.getStringValue());
+            return property.getValue() == null ? null : Integer.parseInt(property.getValue());
         } catch (NumberFormatException e) {
             throw new ParseException(e);
         }

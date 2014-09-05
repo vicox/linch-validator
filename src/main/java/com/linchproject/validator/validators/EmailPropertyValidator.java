@@ -15,7 +15,7 @@ public class EmailPropertyValidator implements PropertyValidator {
 
     @Override
     public boolean isValid(Property property) {
-        for (String value : property.getStringValues()) {
+        for (String value : property.getValues()) {
             if (!value.contains("@")) {
                 return false;
             }

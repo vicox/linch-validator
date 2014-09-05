@@ -25,7 +25,7 @@ public class EqualsOtherPropertyValidator implements PropertyValidator {
     public boolean isValid(Property property) {
         Property otherProperty = property.getData().get(propertyKey);
 
-        String[] otherValues = otherProperty != null ? otherProperty.getStringValues() : null;
-        return Arrays.equals(property.getStringValues(), otherValues);
+        String[] otherValues = otherProperty != null ? otherProperty.getValues() : null;
+        return Arrays.equals(property.getValues(), otherValues);
     }
 }

@@ -9,7 +9,7 @@ public class StringPropertyParser implements PropertyParser<String> {
 
     @Override
     public String parse(Property property) throws ParseException {
-        return property.getStringValue();
+        return property.getValue();
     }
 
     @Override
