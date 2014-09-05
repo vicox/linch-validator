@@ -44,7 +44,7 @@ public class Validator {
                 break;
             }
 
-            Class<?> propertyClass = getFieldClass(clazz, property.getName());
+            Class<?> propertyClass = Reflection.getFieldClass(clazz, property.getName());
             if (propertyClass == null) {
                 propertyClass = String.class;
             }
@@ -111,40 +111,59 @@ public class Validator {
         return data;
     }
 
+    public Data read(Object object) {
+        Data data = new Data();
+
+        for (Method method: object.getClass().getDeclaredMethods()) {
+            if (Reflection.isGetter(method)) {
+                String fieldName = Reflection.getNameFromGetter(method.getName());
+                Class<?> fieldType = method.getReturnType();
+
+                PropertyParser propertyParser = this.parsers.get(fieldType);
+                if (propertyParser == null) {
+                    throw new ParserNotFoundException("parser not found for " + fieldType);
+                }
+
+                try {
+                    Object valueObject = method.invoke(object);
+                    String[] stringValues = propertyParser.toStringArray(valueObject);
+                    data.addProperty(fieldName, stringValues);
+
+                } catch (IllegalAccessException e) {
+                    // ignore
+                } catch (InvocationTargetException e) {
+                    // ignore
+                }
+            }
+        }
+
+        return data;
+    }
+
     public void write(Data data, Object object) {
-        Class<?> objectClass = object.getClass();
-
-        for (Method method: objectClass.getDeclaredMethods()) {
-            if (isSetter(method)) {
-
-                String fieldName = getNameFromSetter(method.getName());
+        for (Method method: object.getClass().getDeclaredMethods()) {
+            if (Reflection.isSetter(method)) {
+                String fieldName = Reflection.getNameFromSetter(method.getName());
                 Class<?> fieldType = method.getParameterTypes()[0];
 
                 Property property = data.get(fieldName);
 
                 if (property != null) {
+                    if (!property.isParsed()) {
+                        PropertyParser propertyParser = this.parsers.get(fieldType);
+                        if (propertyParser == null) {
+                            throw new ParserNotFoundException("parser not found for " + fieldType);
+                        }
+                        property.parse(propertyParser);
+                    }
+
+                    Object parsedValue = property.getParsedValue();
+
                     try {
-                        Method setter = objectClass.getMethod(getSetterName(fieldName), fieldType);
-
-                        if (!property.isParsed()) {
-                            PropertyParser propertyParser = this.parsers.get(fieldType);
-                            if (propertyParser == null) {
-                                throw new ParserNotFoundException("parser not found for " + fieldType);
-                            }
-                            property.parse(propertyParser);
-                        }
-
-                        Object parsedValue = property.getParsedValue();
-
-                        try {
-                            setter.invoke(object, parsedValue);
-                        } catch (IllegalAccessException e) {
-                            // ignore
-                        } catch (InvocationTargetException e) {
-                            // ignore
-                        }
-
-                    } catch (NoSuchMethodException e) {
+                        method.invoke(object, parsedValue);
+                    } catch (IllegalAccessException e) {
+                        // ignore
+                    } catch (InvocationTargetException e) {
                         // ignore
                     }
                 }
@@ -152,46 +171,5 @@ public class Validator {
         }
     }
 
-    private static Class<?> getFieldClass(Class<?> clazz, String fieldName) {
-        Class<?> fieldClass = null;
 
-        try {
-            Method getter = clazz.getMethod(getGetterName(fieldName));
-            fieldClass = getter.getReturnType();
-        } catch (NoSuchMethodException e) {
-            // ignore
-        }
-
-        return fieldClass;
-    }
-
-    private static String getSetterName(String name) {
-        String setterName = "set" + name.substring(0, 1).toUpperCase();
-        if (name.length() > 1) {
-            setterName += name.substring(1, name.length());
-        }
-        return  setterName;
-    }
-
-    private static String getGetterName(String name) {
-        String getterName = "get" + name.substring(0, 1).toUpperCase();
-        if (name.length() > 1) {
-            getterName += name.substring(1, name.length());
-        }
-        return  getterName;
-    }
-
-    private static boolean isSetter(Method method) {
-        return method.getName().startsWith("set")
-                && method.getName().length() > 3
-                && method.getParameterTypes().length > 0;
-    }
-
-    private static String getNameFromSetter(String setterName) {
-        String name = setterName.substring(3, 4).toLowerCase();
-        if (setterName.length() > 5) {
-            name += setterName.substring(5, setterName.length());
-        }
-        return name;
-    }
 }

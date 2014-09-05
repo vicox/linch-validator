@@ -8,13 +8,18 @@ import java.util.Map;
 public class ValidatorTest extends TestCase {
 
     public void testRead() throws Exception {
+        Validator validator = new Validator();
+        Data data;
+
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
+        data = validator.read(map);
+        assertEquals(1, data.size());
+        assertEquals("b", data.get("a").getStringValue());
 
-        Validator validator = new Validator();
-
-        Data data = validator.read(map);
-
+        A a = new A();
+        a.setA("b");
+        data = validator.read(a);
         assertEquals(1, data.size());
         assertEquals("b", data.get("a").getStringValue());
     }
