@@ -14,63 +14,56 @@ public class ValidatorTest extends TestCase {
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         data = validator.read(map);
-        assertEquals(1, data.size());
-        assertEquals("b", data.get("a").getValue());
+        assertEquals(1, data.getProperties().size());
+        assertEquals("b", data.getProperties().get("a").getValue());
 
         A a = new A();
         a.setA("b");
         data = validator.read(a);
-        assertEquals(1, data.size());
-        assertEquals("b", data.get("a").getValue());
+        assertEquals(1, data.getProperties().size());
+        assertEquals("b", data.getProperties().get("a").getValue());
     }
 
     public void testValidate() throws Exception {
         Map<String, String[]> map;
         Validator validator;
         Data data;
-        Map<String, String> errors;
 
         map = new HashMap<String, String[]>();
         validator = new Validator();
-        data = validator.read(map);
-        errors = validator.validate(data, A.class);
-        assertEquals(0, errors.size());
+        data = validator.read(map).validate(A.class);
+        assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         validator = new Validator().setRequired("a");
-        data = validator.read(map);
-        errors = validator.validate(data, A.class);
-        assertEquals(1, errors.size());
-        assertEquals("required", errors.get("a"));
+        data = validator.read(map).validate(A.class);
+        assertEquals(1, data.getErrors().size());
+        assertEquals("required", data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         validator = new Validator().setRequired("a");
-        data = validator.read(map);
-        errors = validator.validate(data, A.class);
-        assertEquals(1, errors.size());
-        assertEquals(Validator.REQUIRED_ERROR, errors.get("a"));
+        data = validator.read(map).validate(A.class);
+        assertEquals(1, data.getErrors().size());
+        assertEquals(Property.REQUIRED_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         validator = new Validator();
-        data = validator.read(map);
-        errors = validator.validate(data, B.class);
-        assertEquals(0, errors.size());
+        data = validator.read(map).validate(B.class);
+        assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         validator = new Validator();
-        data = validator.read(map);
-        errors = validator.validate(data, B.class);
-        assertEquals(1, errors.size());
-        assertEquals(Validator.PARSER_MISSING_ERROR, errors.get("a"));
+        data = validator.read(map).validate(B.class);
+        assertEquals(1, data.getErrors().size());
+        assertEquals(Property.PARSER_MISSING_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         validator = new Validator();
-        data = validator.read(map);
-        errors = validator.validate(data, C.class);
-        assertEquals(1, errors.size());
-        assertEquals(Validator.PARSE_ERROR, errors.get("a"));
+        data = validator.read(map).validate(C.class);
+        assertEquals(1, data.getErrors().size());
+        assertEquals(Property.PARSE_ERROR, data.getErrors().get("a"));
     }
 
     public void testWrite() throws Exception {
@@ -81,8 +74,7 @@ public class ValidatorTest extends TestCase {
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         validator = new Validator();
-        data = validator.read(map);
-        validator.validate(data, A.class);
+        data = validator.read(map).validate(A.class);
 
         A a = new A();
         assertNull(a.getA());

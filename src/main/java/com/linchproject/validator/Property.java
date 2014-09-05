@@ -2,11 +2,16 @@ package com.linchproject.validator;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author Georg Schmidl
  */
 public class Property implements Iterable<String> {
+
+    public static String REQUIRED_ERROR = "required";
+    public static String PARSER_MISSING_ERROR = "parser.not.found";
+    public static String PARSE_ERROR = "invalid.type";
 
     private Data data;
 
@@ -49,17 +54,49 @@ public class Property implements Iterable<String> {
         return this.values;
     }
 
-    public Object getParsed() {
-        return parsed;
-    }
+    public String validate(Class<?> clazz) {
+        if (this.data.getValidator().getRequired().contains(this.getName()) && this.isEmpty()) {
+            return REQUIRED_ERROR;
+        }
 
-    public void parse(PropertyParser propertyParser) throws ParseException{
-        this.parsed = propertyParser.parse(this);
-        this.isParsed = true;
+        Class<?> propertyClass = Reflection.getFieldClass(clazz, this.getName());
+        if (propertyClass == null) {
+            propertyClass = String.class;
+        }
+
+        if (!this.isParsed()) {
+            PropertyParser propertyParser = this.data.getValidator().getParsers().get(propertyClass);
+            if (propertyParser == null) {
+                return PARSER_MISSING_ERROR;
+
+            }
+
+            try {
+                this.parsed = propertyParser.parse(this);
+                this.isParsed = true;
+
+            } catch (ParseException e) {
+                return PARSE_ERROR;
+            }
+        }
+
+        Set<PropertyValidator> propertyValidators = this.data.getValidator().getValidators().get(this.getName());
+        if (propertyValidators != null) {
+            for (PropertyValidator propertyValidator : propertyValidators) {
+                if (!propertyValidator.isValid(this)) {
+                    return propertyValidator.getKey();
+                }
+            }
+        }
+        return null;
     }
 
     public boolean isParsed() {
         return isParsed;
+    }
+
+    public Object getParsed() {
+        return parsed;
     }
 
     boolean isEmpty() {

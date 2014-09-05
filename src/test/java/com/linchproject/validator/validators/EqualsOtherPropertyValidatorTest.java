@@ -10,11 +10,11 @@ public class EqualsOtherPropertyValidatorTest extends TestCase {
         Data data;
         Property property;
 
-        data = new Data().addProperty("c", "d");
+        data = new Data(null).addProperty("c", "d");
         property = new Property(data, "a", "b");
         assertFalse(new EqualsOtherPropertyValidator("c").isValid(property));
 
-        data = new Data().addProperty("c", "b");
+        data = new Data(null).addProperty("c", "b");
         property = new Property(data, "a", "b");
         assertTrue(new EqualsOtherPropertyValidator("c").isValid(property));
     }

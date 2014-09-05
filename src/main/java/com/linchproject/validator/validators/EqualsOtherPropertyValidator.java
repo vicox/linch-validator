@@ -23,7 +23,7 @@ public class EqualsOtherPropertyValidator implements PropertyValidator {
 
     @Override
     public boolean isValid(Property property) {
-        Property otherProperty = property.getData().get(propertyKey);
+        Property otherProperty = property.getData().getProperties().get(propertyKey);
 
         String[] otherValues = otherProperty != null ? otherProperty.getValues() : null;
         return Arrays.equals(property.getValues(), otherValues);
