@@ -7,5 +7,5 @@ public interface PropertyParser<T> {
 
     T parse(Property property) throws ParseException;
 
-    StringValue toStringValue(T object);
+    String[] toStringArray(T object);
 }

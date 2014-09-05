@@ -9,11 +9,11 @@ public class StringPropertyParser implements PropertyParser<String> {
 
     @Override
     public String parse(Property property) throws ParseException {
-        return property.getStringValue().get();
+        return property.getStringValue();
     }
 
     @Override
-    public StringValue toStringValue(String object) {
-        return new StringValue(object);
+    public String[] toStringArray(String string) {
+        return new String[] { string };
     }
 }

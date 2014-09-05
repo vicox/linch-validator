@@ -14,12 +14,12 @@ public class Data extends LinkedHashMap<String, Property> {
     }
 
     public Data addProperty(String name, String value) {
-        super.put(name, new Property(this, name, new StringValue(value)));
+        super.put(name, new Property(this, name, value));
         return this;
     }
 
-    public Data addProperty(String name, String[] value) {
-        super.put(name, new Property(this, name, new StringValue(value)));
+    public Data addProperty(String name, String[] values) {
+        super.put(name, new Property(this, name, values));
         return this;
     }
 

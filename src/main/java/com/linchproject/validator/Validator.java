@@ -25,7 +25,6 @@ public class Validator {
 
     private Map<String, Set<PropertyValidator>> validators = new HashMap<String, Set<PropertyValidator>>();
 
-
     public Map<String, String> validate(Data data, Class<?> clazz) {
         Map<String, String> errors = new LinkedHashMap<String, String>();
 
@@ -40,7 +39,7 @@ public class Validator {
         for (Property property : data.values()) {
 
             // required errors for properties that are empty
-            if (required.contains(property.getName()) && property.getStringValue().isEmpty()) {
+            if (required.contains(property.getName()) && property.isEmpty()) {
                 errors.put(property.getName(), REQUIRED_ERROR);
                 break;
             }
@@ -153,7 +152,7 @@ public class Validator {
         }
     }
 
-    private Class<?> getFieldClass(Class<?> clazz, String fieldName) {
+    private static Class<?> getFieldClass(Class<?> clazz, String fieldName) {
         Class<?> fieldClass = null;
 
         try {
@@ -182,7 +181,7 @@ public class Validator {
         return  getterName;
     }
 
-    private boolean isSetter(Method method) {
+    private static boolean isSetter(Method method) {
         return method.getName().startsWith("set")
                 && method.getName().length() > 3
                 && method.getParameterTypes().length > 0;

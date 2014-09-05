@@ -1,28 +1,36 @@
 package com.linchproject.validator;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 /**
  * @author Georg Schmidl
  */
-public class Property {
+public class Property implements Iterable<String> {
 
     private Data data;
 
     private String name;
 
-    private StringValue stringValue;
+    private String[] stringValues;
 
     private Object parsedValue;
 
-    boolean parsed = false;
+    private boolean parsed = false;
 
     public Property(Data data, String name) {
         this.data = data;
         this.name = name;
     }
 
-    public Property(Data data, String name, StringValue stringValue) {
+    public Property(Data data, String name, String[] values) {
         this(data, name);
-        this.stringValue = stringValue;
+        this.stringValues = values;
+    }
+
+    public Property(Data data, String name, String value) {
+        this(data, name);
+        this.stringValues = new String[] { value };
     }
 
     public Data getData() {
@@ -33,8 +41,12 @@ public class Property {
         return name;
     }
 
-    public StringValue getStringValue() {
-        return stringValue;
+    public String getStringValue() {
+        return this.stringValues != null &&  this.stringValues.length > 0 ? this.stringValues[0] : null;
+    }
+
+    public String[] getStringValues() {
+        return this.stringValues;
     }
 
     public Object getParsedValue() {
@@ -48,5 +60,28 @@ public class Property {
 
     public boolean isParsed() {
         return parsed;
+    }
+
+    boolean isEmpty() {
+        boolean isEmpty = true;
+        if (this.stringValues != null) {
+            for (String value: this.stringValues) {
+                if (value != null && value.length() > 0) {
+                    isEmpty = false;
+                    break;
+                }
+            }
+        }
+        return isEmpty;
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+        return Arrays.asList(this.stringValues).iterator();
+    }
+
+    @Override
+    public String toString() {
+        return getStringValue();
     }
 }

@@ -16,7 +16,7 @@ public class ValidatorTest extends TestCase {
         Data data = validator.read(map);
 
         assertEquals(1, data.size());
-        assertEquals("b", data.get("a").getStringValue().get());
+        assertEquals("b", data.get("a").getStringValue());
     }
 
     public void testValidate() throws Exception {
