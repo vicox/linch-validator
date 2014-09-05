@@ -49,7 +49,7 @@ public class DataTest extends TestCase {
         assertEquals(Property.PARSE_ERROR, data.getErrors().get("a"));
     }
 
-    public void testDump() throws Exception {
+    public void testWriteTo() throws Exception {
         Map<String, String[]> map;
         Validation validation;
         Data data;
@@ -62,7 +62,7 @@ public class DataTest extends TestCase {
         A a = new A();
         assertNull(a.getA());
 
-        data.dump(a);
+        data.writeTo(a);
         assertEquals("b", a.getA());
     }
 

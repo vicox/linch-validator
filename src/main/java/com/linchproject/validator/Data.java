@@ -46,7 +46,7 @@ public class Data {
         return this;
     }
 
-    public void dump(Object object) {
+    public void writeTo(Object object) {
         for (Method method: object.getClass().getDeclaredMethods()) {
             if (Reflection.isSetter(method)) {
                 String fieldName = Reflection.getNameFromSetter(method.getName());
