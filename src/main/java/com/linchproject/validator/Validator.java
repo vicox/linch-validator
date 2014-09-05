@@ -21,7 +21,7 @@ public class Validator {
 
     private Map<String, Set<PropertyValidator>> validators = new HashMap<String, Set<PropertyValidator>>();
 
-    public Data read(Map<String, String[]> map) {
+    public Data create(Map<String, String[]> map) {
         Data data = new Data(this);
 
         for (Map.Entry<String, String[]> entry : map.entrySet()) {
@@ -31,7 +31,7 @@ public class Validator {
         return data;
     }
 
-    public Data read(Object object) {
+    public Data create(Object object) {
         Data data = new Data(this);
 
         for (Method method: object.getClass().getDeclaredMethods()) {

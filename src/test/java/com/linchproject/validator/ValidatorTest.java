@@ -7,19 +7,19 @@ import java.util.Map;
 
 public class ValidatorTest extends TestCase {
 
-    public void testRead() throws Exception {
+    public void testCreate() throws Exception {
         Validator validator = new Validator();
         Data data;
 
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        data = validator.read(map);
+        data = validator.create(map);
         assertEquals(1, data.getProperties().size());
         assertEquals("b", data.getProperties().get("a").getValue());
 
         A a = new A();
         a.setA("b");
-        data = validator.read(a);
+        data = validator.create(a);
         assertEquals(1, data.getProperties().size());
         assertEquals("b", data.getProperties().get("a").getValue());
     }

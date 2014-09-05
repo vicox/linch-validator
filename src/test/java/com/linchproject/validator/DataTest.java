@@ -14,37 +14,37 @@ public class DataTest extends TestCase {
 
         map = new HashMap<String, String[]>();
         validator = new Validator();
-        data = validator.read(map).validate(A.class);
+        data = validator.create(map).validate(A.class);
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         validator = new Validator().setRequired("a");
-        data = validator.read(map).validate(A.class);
+        data = validator.create(map).validate(A.class);
         assertEquals(1, data.getErrors().size());
         assertEquals("required", data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         validator = new Validator().setRequired("a");
-        data = validator.read(map).validate(A.class);
+        data = validator.create(map).validate(A.class);
         assertEquals(1, data.getErrors().size());
         assertEquals(Property.REQUIRED_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         validator = new Validator();
-        data = validator.read(map).validate(B.class);
+        data = validator.create(map).validate(B.class);
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         validator = new Validator();
-        data = validator.read(map).validate(B.class);
+        data = validator.create(map).validate(B.class);
         assertEquals(1, data.getErrors().size());
         assertEquals(Property.PARSER_MISSING_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         validator = new Validator();
-        data = validator.read(map).validate(C.class);
+        data = validator.create(map).validate(C.class);
         assertEquals(1, data.getErrors().size());
         assertEquals(Property.PARSE_ERROR, data.getErrors().get("a"));
     }
@@ -57,7 +57,7 @@ public class DataTest extends TestCase {
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         validator = new Validator();
-        data = validator.read(map).validate(A.class);
+        data = validator.create(map).validate(A.class);
 
         A a = new A();
         assertNull(a.getA());
