@@ -93,6 +93,11 @@ public class ValidationTemplate {
         return this;
     }
 
+    public ValidationTemplate setAllRequired() {
+        this.required.addAll(fields.keySet());
+        return this;
+    }
+
     public ValidationTemplate addParser(Class<?> type, Parser parser) {
         this.parsers.put(type, parser);
         return this;
