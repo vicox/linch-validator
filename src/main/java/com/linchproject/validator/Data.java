@@ -81,10 +81,7 @@ public class Data {
             }
 
             if (!value.isEmpty()) {
-                Class<?> type = Reflection.getFieldClass(getValidationTemplate().getClazz(), key);
-                if (type == null) {
-                    type = String.class;
-                }
+                Class<?> type = getValidationTemplate().getFieldType(key);
 
                 if (!value.isParsed()) {
                     Parser parser = this.getValidationTemplate().getParser(type);

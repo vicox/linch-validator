@@ -11,9 +11,7 @@ import java.util.*;
  */
 public class ValidationTemplate {
 
-    private Class<?> clazz;
-
-    private String[] keys;
+    private Map<String, Class<?>> fields = new LinkedHashMap<String, Class<?>>();
 
     private Set<String> required = new HashSet<String>();
 
@@ -27,17 +25,8 @@ public class ValidationTemplate {
     public Data createEmptyData() {
         Data data = new Data(this);
 
-        if (this.clazz != null) {
-            for (Method method: this.clazz.getDeclaredMethods()) {
-                if (Reflection.isGetter(method)) {
-                    String fieldName = Reflection.getNameFromGetter(method.getName());
-                    data.add(fieldName);
-                }
-            }
-        }
-
-        if (this.keys != null) {
-            for (String key: this.keys) {
+        if (this.fields != null) {
+            for (String key: this.fields.keySet()) {
                 data.add(key);
             }
         }
@@ -53,14 +42,47 @@ public class ValidationTemplate {
         return createEmptyData().readFrom(map);
     }
 
-    public ValidationTemplate setClazz(Class<?> clazz) {
-        this.clazz = clazz;
+    public ValidationTemplate addField(String key) {
+        return this.addField(key, String.class);
+    }
+
+    public ValidationTemplate addField(String key, Class<?> type) {
+        this.fields.put(key, type);
         return this;
     }
 
-    public ValidationTemplate setKeys(String[] keys) {
-        this.keys = keys;
+    public ValidationTemplate addFields(String... keys) {
+        return this.addFields(Arrays.asList(keys));
+    }
+
+    public ValidationTemplate addFields(Collection<String> keys) {
+        for (String key: keys) {
+            this.fields.put(key, String.class);
+        }
         return this;
+    }
+
+    public ValidationTemplate addFields(Map<String, Class<?>> fields) {
+        for (Map.Entry<String, Class<?>> entry: fields.entrySet()) {
+            this.fields.put(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+
+    public ValidationTemplate addFields(Class<?> clazz) {
+        for (Method method: clazz.getDeclaredMethods()) {
+            if (Reflection.isGetter(method)) {
+                String key = Reflection.getNameFromGetter(method.getName());
+                Class<?> type = method.getReturnType();
+                this.fields.put(key, type);
+            }
+        }
+        return this;
+    }
+
+
+    public Class<?> getFieldType(String key) {
+        return this.fields.get(key);
     }
 
     public ValidationTemplate setRequired(String key) {
@@ -80,10 +102,6 @@ public class ValidationTemplate {
 
         this.validators.get(key).add(validator);
         return this;
-    }
-
-    public Class<?> getClazz() {
-        return clazz;
     }
 
     public boolean isRequired(String key) {

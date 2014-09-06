@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 public class ValidationTemplateTest extends TestCase {
 
     public void testCreate() throws Exception {
-        ValidationTemplate validationTemplate = new ValidationTemplate().setClazz(A.class);
+        ValidationTemplate validationTemplate = new ValidationTemplate().addFields(A.class);
         Data data;
 
         data = validationTemplate.createEmptyData();
