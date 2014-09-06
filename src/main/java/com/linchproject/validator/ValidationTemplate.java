@@ -4,10 +4,7 @@ import com.linchproject.validator.parsers.IntegerParser;
 import com.linchproject.validator.parsers.StringParser;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Georg Schmidl
@@ -89,15 +86,16 @@ public class ValidationTemplate {
         return clazz;
     }
 
-    public Set<String> getRequired() {
-        return required;
+    public boolean isRequired(String key) {
+        return this.required.contains(key);
     }
 
-    public Map<Class<?>, Parser> getParsers() {
-        return parsers;
+    public <T> Parser<T> getParser(Class<T> type) {
+        return parsers.get(type);
     }
 
-    public Map<String, Set<Validator>> getValidators() {
-        return validators;
+    public Set<Validator> getValidators(String key) {
+        Set<Validator> validators = this.validators.get(key);
+        return validators == null ? Collections.<Validator>emptySet() : validators;
     }
 }

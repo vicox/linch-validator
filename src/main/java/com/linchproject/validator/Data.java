@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Georg Schmidl
@@ -41,13 +40,13 @@ public class Data {
     public Data readFrom(Object object) {
         for (Method method: object.getClass().getDeclaredMethods()) {
             if (Reflection.isGetter(method)) {
-                String fieldName = Reflection.getNameFromGetter(method.getName());
+                String type = Reflection.getNameFromGetter(method.getName());
 
-                Value value = this.getValues().get(fieldName);
+                Value value = this.getValues().get(type);
                 if (value != null) {
                     Class<?> fieldType = method.getReturnType();
 
-                    Parser parser = this.getValidationTemplate().getParsers().get(fieldType);
+                    Parser parser = this.getValidationTemplate().getParser(fieldType);
                     if (parser == null) {
                         throw new ParserNotFoundException("parser not found for " + fieldType);
                     }
@@ -76,7 +75,7 @@ public class Data {
             String key = entry.getKey();
             Value value = entry.getValue();
             
-            if (this.getValidationTemplate().getRequired().contains(key) && value.isEmpty()) {
+            if (this.getValidationTemplate().isRequired(key) && value.isEmpty()) {
                 this.errors.put(key, REQUIRED_ERROR);
                 continue;
             }
@@ -88,7 +87,7 @@ public class Data {
                 }
 
                 if (!value.isParsed()) {
-                    Parser parser = this.getValidationTemplate().getParsers().get(type);
+                    Parser parser = this.getValidationTemplate().getParser(type);
                     if (parser == null) {
                         this.errors.put(key, PARSER_MISSING_ERROR);
                         continue;
@@ -104,13 +103,10 @@ public class Data {
                 }
             }
 
-            Set<Validator> validators = this.getValidationTemplate().getValidators().get(key);
-            if (validators != null) {
-                for (Validator validator : validators) {
-                    if (!validator.isValid(value)) {
-                        this.errors.put(key, validator.getKey());
-                        break;
-                    }
+            for (Validator validator : this.getValidationTemplate().getValidators(key)) {
+                if (!validator.isValid(value)) {
+                    this.errors.put(key, validator.getKey());
+                    break;
                 }
             }
         }
