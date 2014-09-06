@@ -44,7 +44,7 @@ public class DataTest extends TestCase {
         template = new Template().setPropertyClass(A.class).setRequired("a");
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
-        assertEquals(Property.REQUIRED_ERROR, data.getErrors().get("a"));
+        assertEquals(Data.REQUIRED_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         template = new Template().setPropertyClass(B.class);
@@ -56,14 +56,14 @@ public class DataTest extends TestCase {
         template = new Template().setPropertyClass(B.class);
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
-        assertEquals(Property.PARSER_MISSING_ERROR, data.getErrors().get("a"));
+        assertEquals(Data.PARSER_MISSING_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         template = new Template().setPropertyClass(C.class);
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
-        assertEquals(Property.PARSE_ERROR, data.getErrors().get("a"));
+        assertEquals(Data.PARSE_ERROR, data.getErrors().get("a"));
     }
 
     public void testWriteTo() throws Exception {

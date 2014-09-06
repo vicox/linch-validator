@@ -4,11 +4,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Georg Schmidl
  */
 public class Data {
+
+    public static String REQUIRED_ERROR = "required";
+    public static String PARSER_MISSING_ERROR = "parser.not.found";
+    public static String PARSE_ERROR = "invalid.type";
 
     private Template template;
 
@@ -68,20 +73,41 @@ public class Data {
 
     public Data validate() {
         for (Property property: this.properties.values()) {
-            String error = property.validate(getTemplate().getPropertyClass());
-            if (error != null) {
-                this.errors.put(property.getName(), error);
+            if (this.getTemplate().getRequired().contains(property.getName()) && property.isEmpty()) {
+                this.errors.put(property.getName(), REQUIRED_ERROR);
+                continue;
             }
-        }
 
-        for (String requiredPropertyName : this.template.getRequired()) {
-            Property property = this.properties.get(requiredPropertyName);
-            if (property == null) {
-                property = new Property(this, requiredPropertyName);
-                this.properties.put(requiredPropertyName, property);
-                String error = property.validate(getTemplate().getPropertyClass());
-                if (error != null) {
-                    this.errors.put(property.getName(), error);
+            if (!property.isEmpty()) {
+                Class<?> propertyClass = Reflection.getFieldClass(getTemplate().getPropertyClass(), property.getName());
+                if (propertyClass == null) {
+                    propertyClass = String.class;
+                }
+
+                if (!property.isParsed()) {
+                    Parser parser = this.getTemplate().getParsers().get(propertyClass);
+                    if (parser == null) {
+                        this.errors.put(property.getName(), PARSER_MISSING_ERROR);
+                        continue;
+                    }
+
+                    try {
+                        property.setParsed(parser.parse(property));
+
+                    } catch (ParseException e) {
+                        this.errors.put(property.getName(), PARSE_ERROR);
+                        continue;
+                    }
+                }
+            }
+
+            Set<Validator> validators = this.getTemplate().getValidators().get(property.getName());
+            if (validators != null) {
+                for (Validator validator : validators) {
+                    if (!validator.isValid(property)) {
+                        this.errors.put(property.getName(), validator.getKey());
+                        break;
+                    }
                 }
             }
         }

@@ -2,16 +2,11 @@ package com.linchproject.validator;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * @author Georg Schmidl
  */
 public class Property implements Iterable<String> {
-
-    public static String REQUIRED_ERROR = "required";
-    public static String PARSER_MISSING_ERROR = "parser.not.found";
-    public static String PARSE_ERROR = "invalid.type";
 
     private Data data;
 
@@ -60,51 +55,17 @@ public class Property implements Iterable<String> {
         this.isParsed = false;
     }
 
-    public String validate(Class<?> clazz) {
-        if (this.data.getTemplate().getRequired().contains(this.getName()) && this.isEmpty()) {
-            return REQUIRED_ERROR;
-        }
-
-        if (!this.isEmpty()) {
-            Class<?> propertyClass = Reflection.getFieldClass(clazz, this.getName());
-            if (propertyClass == null) {
-                propertyClass = String.class;
-            }
-
-            if (!this.isParsed()) {
-                Parser parser = this.data.getTemplate().getParsers().get(propertyClass);
-                if (parser == null) {
-                    return PARSER_MISSING_ERROR;
-
-                }
-
-                try {
-                    this.parsed = parser.parse(this);
-                    this.isParsed = true;
-
-                } catch (ParseException e) {
-                    return PARSE_ERROR;
-                }
-            }
-        }
-
-        Set<Validator> validators = this.data.getTemplate().getValidators().get(this.getName());
-        if (validators != null) {
-            for (Validator validator : validators) {
-                if (!validator.isValid(this)) {
-                    return validator.getKey();
-                }
-            }
-        }
-        return null;
-    }
-
     public boolean isParsed() {
         return isParsed;
     }
 
     public Object getParsed() {
         return parsed;
+    }
+
+    public void setParsed(Object parsed) {
+        this.parsed = parsed;
+        this.isParsed = true;
     }
 
     boolean isEmpty() {
