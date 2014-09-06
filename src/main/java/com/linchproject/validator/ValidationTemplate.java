@@ -52,7 +52,10 @@ public class ValidationTemplate {
     }
 
     public ValidationTemplate addFields(String... keys) {
-        return this.addFields(Arrays.asList(keys));
+        for (String key : keys) {
+            this.fields.put(key, String.class);
+        }
+        return this;
     }
 
     public ValidationTemplate addFields(Collection<String> keys) {
@@ -87,6 +90,13 @@ public class ValidationTemplate {
 
     public ValidationTemplate setRequired(String key) {
         this.required.add(key);
+        return this;
+    }
+
+    public ValidationTemplate setRequired(String... keys) {
+        for (String key : keys) {
+            this.required.add(key);
+        }
         return this;
     }
 
