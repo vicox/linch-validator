@@ -43,7 +43,7 @@ public class ValidationTemplate {
     }
 
     public ValidationTemplate addField(String key) {
-        return this.addField(key, String.class);
+        return this.addFields(key);
     }
 
     public ValidationTemplate addField(String key, Class<?> type) {
@@ -52,10 +52,7 @@ public class ValidationTemplate {
     }
 
     public ValidationTemplate addFields(String... keys) {
-        for (String key : keys) {
-            this.fields.put(key, String.class);
-        }
-        return this;
+        return addFields(Arrays.asList(keys));
     }
 
     public ValidationTemplate addFields(Collection<String> keys) {
@@ -66,9 +63,7 @@ public class ValidationTemplate {
     }
 
     public ValidationTemplate addFields(Map<String, Class<?>> fields) {
-        for (Map.Entry<String, Class<?>> entry: fields.entrySet()) {
-            this.fields.put(entry.getKey(), entry.getValue());
-        }
+        this.fields.putAll(fields);
         return this;
     }
 
@@ -94,9 +89,7 @@ public class ValidationTemplate {
     }
 
     public ValidationTemplate setRequired(String... keys) {
-        for (String key : keys) {
-            this.required.add(key);
-        }
+        Collections.addAll(this.required, keys);
         return this;
     }
 
@@ -106,11 +99,14 @@ public class ValidationTemplate {
     }
 
     public ValidationTemplate addValidator(String key, Validator validator) {
+        return this.addValidators(key, validator);
+    }
+
+    public ValidationTemplate addValidators(String key, Validator... validators) {
         if (this.validators.get(key) == null) {
             this.validators.put(key, new HashSet<Validator>());
         }
-
-        this.validators.get(key).add(validator);
+        Collections.addAll(this.validators.get(key), validators);
         return this;
     }
 
