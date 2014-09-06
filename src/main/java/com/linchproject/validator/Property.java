@@ -61,7 +61,7 @@ public class Property implements Iterable<String> {
     }
 
     public String validate(Class<?> clazz) {
-        if (this.data.getValidation().getRequired().contains(this.getName()) && this.isEmpty()) {
+        if (this.data.getTemplate().getRequired().contains(this.getName()) && this.isEmpty()) {
             return REQUIRED_ERROR;
         }
 
@@ -72,7 +72,7 @@ public class Property implements Iterable<String> {
             }
 
             if (!this.isParsed()) {
-                Parser parser = this.data.getValidation().getParsers().get(propertyClass);
+                Parser parser = this.data.getTemplate().getParsers().get(propertyClass);
                 if (parser == null) {
                     return PARSER_MISSING_ERROR;
 
@@ -88,7 +88,7 @@ public class Property implements Iterable<String> {
             }
         }
 
-        Set<Validator> validators = this.data.getValidation().getValidators().get(this.getName());
+        Set<Validator> validators = this.data.getTemplate().getValidators().get(this.getName());
         if (validators != null) {
             for (Validator validator : validators) {
                 if (!validator.isValid(this)) {

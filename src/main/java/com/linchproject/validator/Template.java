@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * @author Georg Schmidl
  */
-public class Validation {
+public class Template {
 
     private Class<?> clazz;
 
@@ -56,27 +56,27 @@ public class Validation {
         return create().readFrom(map);
     }
 
-    public Validation setClazz(Class<?> clazz) {
+    public Template setClazz(Class<?> clazz) {
         this.clazz = clazz;
         return this;
     }
 
-    public Validation setProperties(String[] properties) {
+    public Template setProperties(String[] properties) {
         this.properties = properties;
         return this;
     }
 
-    public Validation setRequired(String propertyName) {
+    public Template setRequired(String propertyName) {
         this.required.add(propertyName);
         return this;
     }
 
-    public Validation addParser(Class<?> propertyType, Parser parser) {
+    public Template addParser(Class<?> propertyType, Parser parser) {
         this.parsers.put(propertyType, parser);
         return this;
     }
 
-    public Validation addValidator(String propertyName, Validator validator) {
+    public Template addValidator(String propertyName, Validator validator) {
         if (this.validators.get(propertyName) == null) {
             this.validators.put(propertyName, new HashSet<Validator>());
         }

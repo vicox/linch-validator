@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class Data {
 
-    private Validation validation;
+    private Template template;
 
     private Map<String, Property> properties = new LinkedHashMap<String, Property>();
 
@@ -18,8 +18,8 @@ public class Data {
 
     private boolean validated;
 
-    public Data(Validation validation) {
-        this.validation = validation;
+    public Data(Template template) {
+        this.template = template;
     }
 
     public Data readFrom(Map<String, String[]> map) {
@@ -42,7 +42,7 @@ public class Data {
                 if (property != null) {
                     Class<?> fieldType = method.getReturnType();
 
-                    Parser parser = this.getValidation().getParsers().get(fieldType);
+                    Parser parser = this.getTemplate().getParsers().get(fieldType);
                     if (parser == null) {
                         throw new ParserNotFoundException("parser not found for " + fieldType);
                     }
@@ -68,18 +68,18 @@ public class Data {
 
     public Data validate() {
         for (Property property: this.properties.values()) {
-            String error = property.validate(getValidation().getClazz());
+            String error = property.validate(getTemplate().getClazz());
             if (error != null) {
                 this.errors.put(property.getName(), error);
             }
         }
 
-        for (String requiredPropertyName : this.validation.getRequired()) {
+        for (String requiredPropertyName : this.template.getRequired()) {
             Property property = this.properties.get(requiredPropertyName);
             if (property == null) {
                 property = new Property(this, requiredPropertyName);
                 this.properties.put(requiredPropertyName, property);
-                String error = property.validate(getValidation().getClazz());
+                String error = property.validate(getTemplate().getClazz());
                 if (error != null) {
                     this.errors.put(property.getName(), error);
                 }
@@ -112,8 +112,8 @@ public class Data {
         }
     }
 
-    public Validation getValidation() {
-        return validation;
+    public Template getTemplate() {
+        return template;
     }
 
     public boolean isValidated() {
