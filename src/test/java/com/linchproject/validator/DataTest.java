@@ -81,6 +81,16 @@ public class DataTest extends TestCase {
 
         data.writeTo(a);
         assertEquals("b", a.getA());
+
+        map = new HashMap<String, String[]>();
+        map.put("a", new String[]{"a"});
+        map.put("b", new String[]{"b"});
+        validationTemplate = new ValidationTemplate().addFields(AB.class);
+        data = validationTemplate.createDataFrom(map).validate();
+        AB ab = new AB();
+        data.writeTo(ab, "a");
+        assertEquals("a", ab.getA());
+        assertNull(ab.getB());
     }
 
     public class A {
@@ -123,6 +133,28 @@ public class DataTest extends TestCase {
 
         public void setA(Integer a) {
             this.a = a;
+        }
+    }
+
+    public class AB {
+
+        private String a;
+        private String b;
+
+        public String getA() {
+            return a;
+        }
+
+        public void setA(String a) {
+            this.a = a;
+        }
+
+        public String getB() {
+            return b;
+        }
+
+        public void setB(String b) {
+            this.b = b;
         }
     }
 }

@@ -2,7 +2,9 @@ package com.linchproject.validator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -119,22 +121,26 @@ public class Data {
         return this;
     }
 
-    public void writeTo(Object object) {
+    public void writeTo(Object object, String... keys) {
+        List<String> keyList = Arrays.asList(keys);
+
         for (Method method: object.getClass().getDeclaredMethods()) {
             if (Reflection.isSetter(method)) {
                 String fieldName = Reflection.getNameFromSetter(method.getName());
 
-                Value value = this.getValues().get(fieldName);
+                if (keyList.isEmpty() || keyList.contains(fieldName)) {
+                    Value value = this.getValues().get(fieldName);
 
-                if (value != null) {
-                    Object parsed = value.getParsed();
+                    if (value != null) {
+                        Object parsed = value.getParsed();
 
-                    try {
-                        method.invoke(object, parsed);
-                    } catch (IllegalAccessException e) {
-                        // ignore
-                    } catch (InvocationTargetException e) {
-                        // ignore
+                        try {
+                            method.invoke(object, parsed);
+                        } catch (IllegalAccessException e) {
+                            // ignore
+                        } catch (InvocationTargetException e) {
+                            // ignore
+                        }
                     }
                 }
             }
