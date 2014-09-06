@@ -26,6 +26,14 @@ public class Data {
         this.validationTemplate = validationTemplate;
     }
 
+    public Data set(String key, String... strings) {
+        Value value = this.getValues().get(key);
+        if (value != null) {
+            value.setStrings(strings);
+        }
+        return this;
+    }
+
     public Data readFrom(Map<String, String[]> map) {
         for (Map.Entry<String, String[]> entry : map.entrySet()) {
             Value value = this.getValues().get(entry.getKey());
@@ -33,7 +41,6 @@ public class Data {
                 value.setStrings(entry.getValue());
             }
         }
-
         return this;
     }
 
@@ -156,7 +163,7 @@ public class Data {
         return value == null ? null : value.getStrings();
     }
 
-    public <T> T getParsed(String key) {
+    public <T> T get(String key) {
         Value value = this.values.get(key);
         return value == null ? null : (T) value.getParsed();
     }
