@@ -186,7 +186,7 @@ public class Data {
         return this;
     }
 
-    public Data add(String key, String[] values) {
+    public Data add(String key, String... values) {
         this.values.put(key, new Value(this, values));
         return this;
     }

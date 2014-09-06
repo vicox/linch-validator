@@ -20,7 +20,7 @@ public class Value<T> implements Iterable<String> {
         this.data = data;
     }
 
-    public Value(Data data, String[] strings) {
+    public Value(Data data, String... strings) {
         this(data);
         this.strings = strings;
     }
@@ -42,7 +42,7 @@ public class Value<T> implements Iterable<String> {
         return this.strings;
     }
 
-    public void setStrings(String[] strings) {
+    public void setStrings(String... strings) {
         this.strings = strings;
         this.parsed = null;
         this.isParsed = false;
