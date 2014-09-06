@@ -13,13 +13,13 @@ public class DataTest extends TestCase {
 
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        data = validationTemplate.create(map);
+        data = validationTemplate.createDataFrom(map);
         assertEquals(1, data.getValues().size());
         assertEquals("b", data.getValues().get("a").getString());
 
         A a = new A();
         a.setA("b");
-        data = validationTemplate.create(a);
+        data = validationTemplate.createDataFrom(a);
         assertEquals(1, data.getValues().size());
         assertEquals("b", data.getValues().get("a").getString());
     }
@@ -31,37 +31,37 @@ public class DataTest extends TestCase {
 
         map = new HashMap<String, String[]>();
         validationTemplate = new ValidationTemplate().setClazz(A.class);
-        data = validationTemplate.create(map).validate();
+        data = validationTemplate.createDataFrom(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         validationTemplate = new ValidationTemplate().setClazz(A.class).setRequired("a");
-        data = validationTemplate.create(map).validate();
+        data = validationTemplate.createDataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals("required", data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         validationTemplate = new ValidationTemplate().setClazz(A.class).setRequired("a");
-        data = validationTemplate.create(map).validate();
+        data = validationTemplate.createDataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Data.REQUIRED_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         validationTemplate = new ValidationTemplate().setClazz(B.class);
-        data = validationTemplate.create(map).validate();
+        data = validationTemplate.createDataFrom(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         validationTemplate = new ValidationTemplate().setClazz(B.class);
-        data = validationTemplate.create(map).validate();
+        data = validationTemplate.createDataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Data.PARSER_MISSING_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         validationTemplate = new ValidationTemplate().setClazz(C.class);
-        data = validationTemplate.create(map).validate();
+        data = validationTemplate.createDataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Data.PARSE_ERROR, data.getErrors().get("a"));
     }
@@ -74,7 +74,7 @@ public class DataTest extends TestCase {
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         validationTemplate = new ValidationTemplate().setClazz(A.class);
-        data = validationTemplate.create(map).validate();
+        data = validationTemplate.createDataFrom(map).validate();
 
         A a = new A();
         assertNull(a.getA());

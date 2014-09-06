@@ -8,7 +8,7 @@ public class ValidationTemplateTest extends TestCase {
         ValidationTemplate validationTemplate = new ValidationTemplate().setClazz(A.class);
         Data data;
 
-        data = validationTemplate.create();
+        data = validationTemplate.createEmptyData();
         assertEquals(1, data.getValues().size());
         assertNull(data.getValues().get("a").getString());
     }

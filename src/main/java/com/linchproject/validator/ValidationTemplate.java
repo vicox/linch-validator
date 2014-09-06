@@ -24,7 +24,7 @@ public class ValidationTemplate {
 
     private Map<String, Set<Validator>> validators = new HashMap<String, Set<Validator>>();
 
-    public Data create() {
+    public Data createEmptyData() {
         Data data = new Data(this);
 
         if (this.clazz != null) {
@@ -45,12 +45,12 @@ public class ValidationTemplate {
         return data;
     }
 
-    public Data create(Object object) {
-        return create().readFrom(object);
+    public Data createDataFrom(Object object) {
+        return createEmptyData().readFrom(object);
     }
 
-    public Data create(Map<String, String[]> map) {
-        return create().readFrom(map);
+    public Data createDataFrom(Map<String, String[]> map) {
+        return createEmptyData().readFrom(map);
     }
 
     public ValidationTemplate setClazz(Class<?> clazz) {
