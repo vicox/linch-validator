@@ -30,37 +30,37 @@ public class DataTest extends TestCase {
         Data data;
 
         map = new HashMap<String, String[]>();
-        template = new Template().setClazz(A.class);
+        template = new Template().setPropertyClass(A.class);
         data = template.create(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
-        template = new Template().setClazz(A.class).setRequired("a");
+        template = new Template().setPropertyClass(A.class).setRequired("a");
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals("required", data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
-        template = new Template().setClazz(A.class).setRequired("a");
+        template = new Template().setPropertyClass(A.class).setRequired("a");
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Property.REQUIRED_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
-        template = new Template().setClazz(B.class);
+        template = new Template().setPropertyClass(B.class);
         data = template.create(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        template = new Template().setClazz(B.class);
+        template = new Template().setPropertyClass(B.class);
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Property.PARSER_MISSING_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        template = new Template().setClazz(C.class);
+        template = new Template().setPropertyClass(C.class);
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Property.PARSE_ERROR, data.getErrors().get("a"));
@@ -73,7 +73,7 @@ public class DataTest extends TestCase {
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        template = new Template().setClazz(A.class);
+        template = new Template().setPropertyClass(A.class);
         data = template.create(map).validate();
 
         A a = new A();

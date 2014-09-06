@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class Template {
 
-    private Class<?> clazz;
+    private Class<?> propertyClass;
 
     private String[] properties;
 
@@ -30,8 +30,8 @@ public class Template {
     public Data create() {
         Data data = new Data(this);
 
-        if (this.clazz != null) {
-            for (Method method: this.clazz.getDeclaredMethods()) {
+        if (this.propertyClass != null) {
+            for (Method method: this.propertyClass.getDeclaredMethods()) {
                 if (Reflection.isGetter(method)) {
                     String fieldName = Reflection.getNameFromGetter(method.getName());
                     data.addProperty(fieldName);
@@ -56,8 +56,8 @@ public class Template {
         return create().readFrom(map);
     }
 
-    public Template setClazz(Class<?> clazz) {
-        this.clazz = clazz;
+    public Template setPropertyClass(Class<?> propertyClass) {
+        this.propertyClass = propertyClass;
         return this;
     }
 
@@ -85,8 +85,8 @@ public class Template {
         return this;
     }
 
-    public Class<?> getClazz() {
-        return clazz;
+    public Class<?> getPropertyClass() {
+        return propertyClass;
     }
 
     public Set<String> getRequired() {

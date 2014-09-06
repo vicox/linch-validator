@@ -68,7 +68,7 @@ public class Data {
 
     public Data validate() {
         for (Property property: this.properties.values()) {
-            String error = property.validate(getTemplate().getClazz());
+            String error = property.validate(getTemplate().getPropertyClass());
             if (error != null) {
                 this.errors.put(property.getName(), error);
             }
@@ -79,7 +79,7 @@ public class Data {
             if (property == null) {
                 property = new Property(this, requiredPropertyName);
                 this.properties.put(requiredPropertyName, property);
-                String error = property.validate(getTemplate().getClazz());
+                String error = property.validate(getTemplate().getPropertyClass());
                 if (error != null) {
                     this.errors.put(property.getName(), error);
                 }

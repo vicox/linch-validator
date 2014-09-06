@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 public class TemplateTest extends TestCase {
 
     public void testCreate() throws Exception {
-        Template template = new Template().setClazz(A.class);
+        Template template = new Template().setPropertyClass(A.class);
         Data data;
 
         data = template.create();
