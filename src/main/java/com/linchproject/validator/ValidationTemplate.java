@@ -78,6 +78,16 @@ public class ValidationTemplate {
         return keys.length > 0 ? addFields(keys) : this;
     }
 
+    public ValidationTemplate removeField(String key) {
+        return removeFields(key);
+    }
+
+    public ValidationTemplate removeFields(String... keys) {
+        for (String key: keys) {
+            this.fields.remove(key);
+        }
+        return this;
+    }
 
     public Class<?> getFieldType(String key) {
         return this.fields.get(key);
