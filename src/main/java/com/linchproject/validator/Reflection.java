@@ -7,19 +7,6 @@ import java.lang.reflect.Method;
  */
 public class Reflection {
 
-    public static Class<?> getFieldClass(Class<?> clazz, String fieldName) {
-        Class<?> fieldClass = null;
-
-        try {
-            Method getter = clazz.getMethod(getGetterName(fieldName));
-            fieldClass = getter.getReturnType();
-        } catch (NoSuchMethodException e) {
-            // ignore
-        }
-
-        return fieldClass;
-    }
-
     public static String getSetterName(String name) {
         String setterName = "set" + name.substring(0, 1).toUpperCase();
         if (name.length() > 1) {
@@ -50,16 +37,16 @@ public class Reflection {
 
     public static String getNameFromSetter(String setterName) {
         String name = setterName.substring(3, 4).toLowerCase();
-        if (setterName.length() > 5) {
-            name += setterName.substring(5, setterName.length());
+        if (setterName.length() > 4) {
+            name += setterName.substring(4, setterName.length());
         }
         return name;
     }
 
     public static String getNameFromGetter(String getterName) {
         String name = getterName.substring(3, 4).toLowerCase();
-        if (getterName.length() > 5) {
-            name += getterName.substring(5, getterName.length());
+        if (getterName.length() > 4) {
+            name += getterName.substring(4, getterName.length());
         }
         return name;
     }
