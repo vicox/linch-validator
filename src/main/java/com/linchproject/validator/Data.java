@@ -72,14 +72,17 @@ public class Data {
     }
 
     public Data validate() {
-        for (Property property: this.properties.values()) {
-            if (this.getTemplate().getRequired().contains(property.getName()) && property.isEmpty()) {
-                this.errors.put(property.getName(), REQUIRED_ERROR);
+        for (Map.Entry<String, Property> entry: this.properties.entrySet()) {
+            String name = entry.getKey();
+            Property property = entry.getValue();
+            
+            if (this.getTemplate().getRequired().contains(name) && property.isEmpty()) {
+                this.errors.put(name, REQUIRED_ERROR);
                 continue;
             }
 
             if (!property.isEmpty()) {
-                Class<?> propertyClass = Reflection.getFieldClass(getTemplate().getPropertyClass(), property.getName());
+                Class<?> propertyClass = Reflection.getFieldClass(getTemplate().getPropertyClass(), name);
                 if (propertyClass == null) {
                     propertyClass = String.class;
                 }
@@ -87,7 +90,7 @@ public class Data {
                 if (!property.isParsed()) {
                     Parser parser = this.getTemplate().getParsers().get(propertyClass);
                     if (parser == null) {
-                        this.errors.put(property.getName(), PARSER_MISSING_ERROR);
+                        this.errors.put(name, PARSER_MISSING_ERROR);
                         continue;
                     }
 
@@ -95,17 +98,17 @@ public class Data {
                         property.setParsed(parser.parse(property));
 
                     } catch (ParseException e) {
-                        this.errors.put(property.getName(), PARSE_ERROR);
+                        this.errors.put(name, PARSE_ERROR);
                         continue;
                     }
                 }
             }
 
-            Set<Validator> validators = this.getTemplate().getValidators().get(property.getName());
+            Set<Validator> validators = this.getTemplate().getValidators().get(name);
             if (validators != null) {
                 for (Validator validator : validators) {
                     if (!validator.isValid(property)) {
-                        this.errors.put(property.getName(), validator.getKey());
+                        this.errors.put(name, validator.getKey());
                         break;
                     }
                 }
@@ -159,17 +162,17 @@ public class Data {
     }
 
     public Data addProperty(String name) {
-        this.properties.put(name, new Property(this, name));
+        this.properties.put(name, new Property(this));
         return this;
     }
 
     public Data addProperty(String name, String value) {
-        this.properties.put(name, new Property(this, name, value));
+        this.properties.put(name, new Property(this, value));
         return this;
     }
 
     public Data addProperty(String name, String[] values) {
-        this.properties.put(name, new Property(this, name, values));
+        this.properties.put(name, new Property(this, values));
         return this;
     }
 

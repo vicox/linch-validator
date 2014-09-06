@@ -10,35 +10,28 @@ public class Property implements Iterable<String> {
 
     private Data data;
 
-    private String name;
-
     private String[] values;
 
     private Object parsed;
 
     private boolean isParsed = false;
 
-    public Property(Data data, String name) {
+    public Property(Data data) {
         this.data = data;
-        this.name = name;
     }
 
-    public Property(Data data, String name, String[] values) {
-        this(data, name);
+    public Property(Data data, String[] values) {
+        this(data);
         this.values = values;
     }
 
-    public Property(Data data, String name, String value) {
-        this(data, name);
+    public Property(Data data, String value) {
+        this(data);
         this.values = new String[] { value };
     }
 
     public Data getData() {
         return data;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getValue() {

@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 public class StringParserTest extends TestCase {
 
     public void testParse() throws Exception {
-        Property property = new Property(null, "test", "a");
+        Property property = new Property(null, "a");
         assertEquals("a", new StringParser().parse(property));
     }
 

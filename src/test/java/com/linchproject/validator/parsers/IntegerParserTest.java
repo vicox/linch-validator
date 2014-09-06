@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 public class IntegerParserTest extends TestCase {
 
     public void testParse() throws Exception {
-        Property property = new Property(null, "test", "1");
+        Property property = new Property(null, "1");
         assertEquals(Integer.valueOf(1), new IntegerParser().parse(property));
     }
 
