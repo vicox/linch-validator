@@ -55,19 +55,19 @@ public class ValidationTemplate {
         return addFields(Arrays.asList(keys));
     }
 
-    public ValidationTemplate addFields(Collection<String> keys) {
+    public ValidationTemplate addFields(Collection<String> keys, String... moreKeys) {
         for (String key: keys) {
             this.fields.put(key, String.class);
         }
-        return this;
+        return moreKeys.length > 0 ? addFields(moreKeys) : this;
     }
 
-    public ValidationTemplate addFields(Map<String, Class<?>> fields) {
+    public ValidationTemplate addFields(Map<String, Class<?>> fields, String... keys) {
         this.fields.putAll(fields);
-        return this;
+        return keys.length > 0 ? addFields(keys) : this;
     }
 
-    public ValidationTemplate addFields(Class<?> clazz) {
+    public ValidationTemplate addFields(Class<?> clazz, String... keys) {
         for (Method method: clazz.getDeclaredMethods()) {
             if (Reflection.isGetter(method)) {
                 String key = Reflection.getNameFromGetter(method.getName());
@@ -75,7 +75,7 @@ public class ValidationTemplate {
                 this.fields.put(key, type);
             }
         }
-        return this;
+        return keys.length > 0 ? addFields(keys) : this;
     }
 
 
