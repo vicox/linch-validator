@@ -8,73 +8,73 @@ import java.util.Map;
 public class DataTest extends TestCase {
 
     public void testReadFrom() throws Exception {
-        Template template = new Template().setKeys(new String[]{"a"});
+        ValidationTemplate validationTemplate = new ValidationTemplate().setKeys(new String[]{"a"});
         Data data;
 
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        data = template.create(map);
+        data = validationTemplate.create(map);
         assertEquals(1, data.getValues().size());
         assertEquals("b", data.getValues().get("a").getString());
 
         A a = new A();
         a.setA("b");
-        data = template.create(a);
+        data = validationTemplate.create(a);
         assertEquals(1, data.getValues().size());
         assertEquals("b", data.getValues().get("a").getString());
     }
 
     public void testValidate() throws Exception {
         Map<String, String[]> map;
-        Template template;
+        ValidationTemplate validationTemplate;
         Data data;
 
         map = new HashMap<String, String[]>();
-        template = new Template().setClazz(A.class);
-        data = template.create(map).validate();
+        validationTemplate = new ValidationTemplate().setClazz(A.class);
+        data = validationTemplate.create(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
-        template = new Template().setClazz(A.class).setRequired("a");
-        data = template.create(map).validate();
+        validationTemplate = new ValidationTemplate().setClazz(A.class).setRequired("a");
+        data = validationTemplate.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals("required", data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
-        template = new Template().setClazz(A.class).setRequired("a");
-        data = template.create(map).validate();
+        validationTemplate = new ValidationTemplate().setClazz(A.class).setRequired("a");
+        data = validationTemplate.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Data.REQUIRED_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
-        template = new Template().setClazz(B.class);
-        data = template.create(map).validate();
+        validationTemplate = new ValidationTemplate().setClazz(B.class);
+        data = validationTemplate.create(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        template = new Template().setClazz(B.class);
-        data = template.create(map).validate();
+        validationTemplate = new ValidationTemplate().setClazz(B.class);
+        data = validationTemplate.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Data.PARSER_MISSING_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        template = new Template().setClazz(C.class);
-        data = template.create(map).validate();
+        validationTemplate = new ValidationTemplate().setClazz(C.class);
+        data = validationTemplate.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Data.PARSE_ERROR, data.getErrors().get("a"));
     }
 
     public void testWriteTo() throws Exception {
         Map<String, String[]> map;
-        Template template;
+        ValidationTemplate validationTemplate;
         Data data;
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        template = new Template().setClazz(A.class);
-        data = template.create(map).validate();
+        validationTemplate = new ValidationTemplate().setClazz(A.class);
+        data = validationTemplate.create(map).validate();
 
         A a = new A();
         assertNull(a.getA());

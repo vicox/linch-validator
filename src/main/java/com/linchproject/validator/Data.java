@@ -15,7 +15,7 @@ public class Data {
     public static String PARSER_MISSING_ERROR = "parser.not.found";
     public static String PARSE_ERROR = "invalid.type";
 
-    private Template template;
+    private ValidationTemplate validationTemplate;
 
     private Map<String, Value> values = new LinkedHashMap<String, Value>();
 
@@ -23,8 +23,8 @@ public class Data {
 
     private boolean validated;
 
-    public Data(Template template) {
-        this.template = template;
+    public Data(ValidationTemplate validationTemplate) {
+        this.validationTemplate = validationTemplate;
     }
 
     public Data readFrom(Map<String, String[]> map) {
@@ -47,7 +47,7 @@ public class Data {
                 if (value != null) {
                     Class<?> fieldType = method.getReturnType();
 
-                    Parser parser = this.getTemplate().getParsers().get(fieldType);
+                    Parser parser = this.getValidationTemplate().getParsers().get(fieldType);
                     if (parser == null) {
                         throw new ParserNotFoundException("parser not found for " + fieldType);
                     }
@@ -76,19 +76,19 @@ public class Data {
             String key = entry.getKey();
             Value value = entry.getValue();
             
-            if (this.getTemplate().getRequired().contains(key) && value.isEmpty()) {
+            if (this.getValidationTemplate().getRequired().contains(key) && value.isEmpty()) {
                 this.errors.put(key, REQUIRED_ERROR);
                 continue;
             }
 
             if (!value.isEmpty()) {
-                Class<?> type = Reflection.getFieldClass(getTemplate().getClazz(), key);
+                Class<?> type = Reflection.getFieldClass(getValidationTemplate().getClazz(), key);
                 if (type == null) {
                     type = String.class;
                 }
 
                 if (!value.isParsed()) {
-                    Parser parser = this.getTemplate().getParsers().get(type);
+                    Parser parser = this.getValidationTemplate().getParsers().get(type);
                     if (parser == null) {
                         this.errors.put(key, PARSER_MISSING_ERROR);
                         continue;
@@ -104,7 +104,7 @@ public class Data {
                 }
             }
 
-            Set<Validator> validators = this.getTemplate().getValidators().get(key);
+            Set<Validator> validators = this.getValidationTemplate().getValidators().get(key);
             if (validators != null) {
                 for (Validator validator : validators) {
                     if (!validator.isValid(value)) {
@@ -141,8 +141,8 @@ public class Data {
         }
     }
 
-    public Template getTemplate() {
-        return template;
+    public ValidationTemplate getValidationTemplate() {
+        return validationTemplate;
     }
 
     public boolean isValidated() {
