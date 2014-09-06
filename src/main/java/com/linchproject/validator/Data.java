@@ -146,6 +146,21 @@ public class Data {
         return values;
     }
 
+    public String getString(String key) {
+        Value value = this.values.get(key);
+        return value == null ? null : value.getString();
+    }
+
+    public String[] getStrings(String key) {
+        Value value = this.values.get(key);
+        return value == null ? null : value.getStrings();
+    }
+
+    public <T> T getParsed(String key) {
+        Value value = this.values.get(key);
+        return value == null ? null : (T) value.getParsed();
+    }
+
     public Map<String, String> getErrors() {
         return errors;
     }
