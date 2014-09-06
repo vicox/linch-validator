@@ -54,29 +54,37 @@ public class Property implements Iterable<String> {
         return this.values;
     }
 
+    public void setValues(String[] values) {
+        this.values = values;
+        this.parsed = null;
+        this.isParsed = false;
+    }
+
     public String validate(Class<?> clazz) {
         if (this.data.getValidation().getRequired().contains(this.getName()) && this.isEmpty()) {
             return REQUIRED_ERROR;
         }
 
-        Class<?> propertyClass = Reflection.getFieldClass(clazz, this.getName());
-        if (propertyClass == null) {
-            propertyClass = String.class;
-        }
-
-        if (!this.isParsed()) {
-            Parser parser = this.data.getValidation().getParsers().get(propertyClass);
-            if (parser == null) {
-                return PARSER_MISSING_ERROR;
-
+        if (!this.isEmpty()) {
+            Class<?> propertyClass = Reflection.getFieldClass(clazz, this.getName());
+            if (propertyClass == null) {
+                propertyClass = String.class;
             }
 
-            try {
-                this.parsed = parser.parse(this);
-                this.isParsed = true;
+            if (!this.isParsed()) {
+                Parser parser = this.data.getValidation().getParsers().get(propertyClass);
+                if (parser == null) {
+                    return PARSER_MISSING_ERROR;
 
-            } catch (ParseException e) {
-                return PARSE_ERROR;
+                }
+
+                try {
+                    this.parsed = parser.parse(this);
+                    this.isParsed = true;
+
+                } catch (ParseException e) {
+                    return PARSE_ERROR;
+                }
             }
         }
 

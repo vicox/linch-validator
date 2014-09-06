@@ -22,9 +22,53 @@ public class Data {
         this.validation = validation;
     }
 
-    public Data validate(Class<?> clazz) {
+    public Data readFrom(Map<String, String[]> map) {
+        for (Map.Entry<String, String[]> entry : map.entrySet()) {
+            Property property = this.getProperties().get(entry.getKey());
+            if (property != null) {
+                property.setValues(entry.getValue());
+            }
+        }
+
+        return this;
+    }
+
+    public Data readFrom(Object object) {
+        for (Method method: object.getClass().getDeclaredMethods()) {
+            if (Reflection.isGetter(method)) {
+                String fieldName = Reflection.getNameFromGetter(method.getName());
+
+                Property property = this.getProperties().get(fieldName);
+                if (property != null) {
+                    Class<?> fieldType = method.getReturnType();
+
+                    Parser parser = this.getValidation().getParsers().get(fieldType);
+                    if (parser == null) {
+                        throw new ParserNotFoundException("parser not found for " + fieldType);
+                    }
+
+                    try {
+                        Object valueObject = method.invoke(object);
+                        String[] values = parser.toStringArray(valueObject);
+                        property.setValues(values);
+
+                    } catch (IllegalAccessException e) {
+                        // ignore
+                    } catch (InvocationTargetException e) {
+                        // ignore
+                    }
+                }
+
+
+            }
+        }
+
+        return this;
+    }
+
+    public Data validate() {
         for (Property property: this.properties.values()) {
-            String error = property.validate(clazz);
+            String error = property.validate(getValidation().getClazz());
             if (error != null) {
                 this.errors.put(property.getName(), error);
             }
@@ -35,7 +79,7 @@ public class Data {
             if (property == null) {
                 property = new Property(this, requiredPropertyName);
                 this.properties.put(requiredPropertyName, property);
-                String error = property.validate(clazz);
+                String error = property.validate(getValidation().getClazz());
                 if (error != null) {
                     this.errors.put(property.getName(), error);
                 }

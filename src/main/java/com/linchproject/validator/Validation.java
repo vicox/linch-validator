@@ -3,14 +3,20 @@ package com.linchproject.validator;
 import com.linchproject.validator.parsers.IntegerParser;
 import com.linchproject.validator.parsers.StringParser;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Georg Schmidl
  */
 public class Validation {
+
+    private Class<?> clazz;
+
+    private String[] properties;
 
     private Set<String> required = new HashSet<String>();
 
@@ -21,56 +27,43 @@ public class Validation {
 
     private Map<String, Set<Validator>> validators = new HashMap<String, Set<Validator>>();
 
-    public Data create(Map<String, String[]> map) {
+    public Data create() {
         Data data = new Data(this);
 
-        for (Map.Entry<String, String[]> entry : map.entrySet()) {
-            data.addProperty(entry.getKey(), entry.getValue());
+        if (this.clazz != null) {
+            for (Method method: this.clazz.getDeclaredMethods()) {
+                if (Reflection.isGetter(method)) {
+                    String fieldName = Reflection.getNameFromGetter(method.getName());
+                    data.addProperty(fieldName);
+                }
+            }
+        }
+
+        if (this.properties != null) {
+            for (String property: this.properties) {
+                data.addProperty(property);
+            }
         }
 
         return data;
     }
 
     public Data create(Object object) {
-        Data data = new Data(this);
-
-        for (Method method: object.getClass().getDeclaredMethods()) {
-            if (Reflection.isGetter(method)) {
-                String fieldName = Reflection.getNameFromGetter(method.getName());
-                Class<?> fieldType = method.getReturnType();
-
-                Parser parser = this.parsers.get(fieldType);
-                if (parser == null) {
-                    throw new ParserNotFoundException("parser not found for " + fieldType);
-                }
-
-                try {
-                    Object valueObject = method.invoke(object);
-                    String[] values = parser.toStringArray(valueObject);
-                    data.addProperty(fieldName, values);
-
-                } catch (IllegalAccessException e) {
-                    // ignore
-                } catch (InvocationTargetException e) {
-                    // ignore
-                }
-            }
-        }
-
-        return data;
+        return create().readFrom(object);
     }
 
-    public Data create(Class<?> clazz) {
-        Data data = new Data(this);
+    public Data create(Map<String, String[]> map) {
+        return create().readFrom(map);
+    }
 
-        for (Method method: clazz.getDeclaredMethods()) {
-            if (Reflection.isGetter(method)) {
-                String fieldName = Reflection.getNameFromGetter(method.getName());
-                data.addProperty(fieldName);
-            }
-        }
+    public Validation setClazz(Class<?> clazz) {
+        this.clazz = clazz;
+        return this;
+    }
 
-        return data;
+    public Validation setProperties(String[] properties) {
+        this.properties = properties;
+        return this;
     }
 
     public Validation setRequired(String propertyName) {
@@ -90,6 +83,10 @@ public class Validation {
 
         this.validators.get(propertyName).add(validator);
         return this;
+    }
+
+    public Class<?> getClazz() {
+        return clazz;
     }
 
     public Set<String> getRequired() {
