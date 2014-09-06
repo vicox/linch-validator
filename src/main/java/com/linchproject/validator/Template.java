@@ -14,9 +14,9 @@ import java.util.Set;
  */
 public class Template {
 
-    private Class<?> propertyClass;
+    private Class<?> clazz;
 
-    private String[] properties;
+    private String[] keys;
 
     private Set<String> required = new HashSet<String>();
 
@@ -30,18 +30,18 @@ public class Template {
     public Data create() {
         Data data = new Data(this);
 
-        if (this.propertyClass != null) {
-            for (Method method: this.propertyClass.getDeclaredMethods()) {
+        if (this.clazz != null) {
+            for (Method method: this.clazz.getDeclaredMethods()) {
                 if (Reflection.isGetter(method)) {
                     String fieldName = Reflection.getNameFromGetter(method.getName());
-                    data.addProperty(fieldName);
+                    data.add(fieldName);
                 }
             }
         }
 
-        if (this.properties != null) {
-            for (String property: this.properties) {
-                data.addProperty(property);
+        if (this.keys != null) {
+            for (String key: this.keys) {
+                data.add(key);
             }
         }
 
@@ -56,37 +56,37 @@ public class Template {
         return create().readFrom(map);
     }
 
-    public Template setPropertyClass(Class<?> propertyClass) {
-        this.propertyClass = propertyClass;
+    public Template setClazz(Class<?> clazz) {
+        this.clazz = clazz;
         return this;
     }
 
-    public Template setProperties(String[] properties) {
-        this.properties = properties;
+    public Template setKeys(String[] keys) {
+        this.keys = keys;
         return this;
     }
 
-    public Template setRequired(String propertyName) {
-        this.required.add(propertyName);
+    public Template setRequired(String key) {
+        this.required.add(key);
         return this;
     }
 
-    public Template addParser(Class<?> propertyType, Parser parser) {
-        this.parsers.put(propertyType, parser);
+    public Template addParser(Class<?> type, Parser parser) {
+        this.parsers.put(type, parser);
         return this;
     }
 
-    public Template addValidator(String propertyName, Validator validator) {
-        if (this.validators.get(propertyName) == null) {
-            this.validators.put(propertyName, new HashSet<Validator>());
+    public Template addValidator(String key, Validator validator) {
+        if (this.validators.get(key) == null) {
+            this.validators.put(key, new HashSet<Validator>());
         }
 
-        this.validators.get(propertyName).add(validator);
+        this.validators.get(key).add(validator);
         return this;
     }
 
-    public Class<?> getPropertyClass() {
-        return propertyClass;
+    public Class<?> getClazz() {
+        return clazz;
     }
 
     public Set<String> getRequired() {

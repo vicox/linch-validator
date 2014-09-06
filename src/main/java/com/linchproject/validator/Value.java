@@ -6,44 +6,44 @@ import java.util.Iterator;
 /**
  * @author Georg Schmidl
  */
-public class Property implements Iterable<String> {
+public class Value implements Iterable<String> {
 
     private Data data;
 
-    private String[] values;
+    private String[] strings;
 
     private Object parsed;
 
     private boolean isParsed = false;
 
-    public Property(Data data) {
+    public Value(Data data) {
         this.data = data;
     }
 
-    public Property(Data data, String[] values) {
+    public Value(Data data, String[] strings) {
         this(data);
-        this.values = values;
+        this.strings = strings;
     }
 
-    public Property(Data data, String value) {
+    public Value(Data data, String string) {
         this(data);
-        this.values = new String[] { value };
+        this.strings = new String[] { string };
     }
 
     public Data getData() {
         return data;
     }
 
-    public String getValue() {
-        return this.values != null &&  this.values.length > 0 ? this.values[0] : null;
+    public String getString() {
+        return this.strings != null &&  this.strings.length > 0 ? this.strings[0] : null;
     }
 
-    public String[] getValues() {
-        return this.values;
+    public String[] getStrings() {
+        return this.strings;
     }
 
-    public void setValues(String[] values) {
-        this.values = values;
+    public void setStrings(String[] strings) {
+        this.strings = strings;
         this.parsed = null;
         this.isParsed = false;
     }
@@ -63,8 +63,8 @@ public class Property implements Iterable<String> {
 
     boolean isEmpty() {
         boolean isEmpty = true;
-        if (this.values != null) {
-            for (String value: this.values) {
+        if (this.strings != null) {
+            for (String value: this.strings) {
                 if (value != null && value.length() > 0) {
                     isEmpty = false;
                     break;
@@ -76,11 +76,11 @@ public class Property implements Iterable<String> {
 
     @Override
     public Iterator<String> iterator() {
-        return Arrays.asList(this.values).iterator();
+        return Arrays.asList(this.strings).iterator();
     }
 
     @Override
     public String toString() {
-        return getValue();
+        return getString();
     }
 }

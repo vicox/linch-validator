@@ -7,5 +7,5 @@ public interface Validator {
 
     String getKey();
 
-    boolean isValid(Property property);
+    boolean isValid(Value value);
 }

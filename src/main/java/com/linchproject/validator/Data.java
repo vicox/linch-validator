@@ -17,7 +17,7 @@ public class Data {
 
     private Template template;
 
-    private Map<String, Property> properties = new LinkedHashMap<String, Property>();
+    private Map<String, Value> values = new LinkedHashMap<String, Value>();
 
     private Map<String, String> errors = new LinkedHashMap<String, String>();
 
@@ -29,9 +29,9 @@ public class Data {
 
     public Data readFrom(Map<String, String[]> map) {
         for (Map.Entry<String, String[]> entry : map.entrySet()) {
-            Property property = this.getProperties().get(entry.getKey());
-            if (property != null) {
-                property.setValues(entry.getValue());
+            Value value = this.getValues().get(entry.getKey());
+            if (value != null) {
+                value.setStrings(entry.getValue());
             }
         }
 
@@ -43,8 +43,8 @@ public class Data {
             if (Reflection.isGetter(method)) {
                 String fieldName = Reflection.getNameFromGetter(method.getName());
 
-                Property property = this.getProperties().get(fieldName);
-                if (property != null) {
+                Value value = this.getValues().get(fieldName);
+                if (value != null) {
                     Class<?> fieldType = method.getReturnType();
 
                     Parser parser = this.getTemplate().getParsers().get(fieldType);
@@ -55,7 +55,7 @@ public class Data {
                     try {
                         Object valueObject = method.invoke(object);
                         String[] values = parser.toStringArray(valueObject);
-                        property.setValues(values);
+                        value.setStrings(values);
 
                     } catch (IllegalAccessException e) {
                         // ignore
@@ -72,43 +72,43 @@ public class Data {
     }
 
     public Data validate() {
-        for (Map.Entry<String, Property> entry: this.properties.entrySet()) {
-            String name = entry.getKey();
-            Property property = entry.getValue();
+        for (Map.Entry<String, Value> entry: this.values.entrySet()) {
+            String key = entry.getKey();
+            Value value = entry.getValue();
             
-            if (this.getTemplate().getRequired().contains(name) && property.isEmpty()) {
-                this.errors.put(name, REQUIRED_ERROR);
+            if (this.getTemplate().getRequired().contains(key) && value.isEmpty()) {
+                this.errors.put(key, REQUIRED_ERROR);
                 continue;
             }
 
-            if (!property.isEmpty()) {
-                Class<?> propertyClass = Reflection.getFieldClass(getTemplate().getPropertyClass(), name);
-                if (propertyClass == null) {
-                    propertyClass = String.class;
+            if (!value.isEmpty()) {
+                Class<?> type = Reflection.getFieldClass(getTemplate().getClazz(), key);
+                if (type == null) {
+                    type = String.class;
                 }
 
-                if (!property.isParsed()) {
-                    Parser parser = this.getTemplate().getParsers().get(propertyClass);
+                if (!value.isParsed()) {
+                    Parser parser = this.getTemplate().getParsers().get(type);
                     if (parser == null) {
-                        this.errors.put(name, PARSER_MISSING_ERROR);
+                        this.errors.put(key, PARSER_MISSING_ERROR);
                         continue;
                     }
 
                     try {
-                        property.setParsed(parser.parse(property));
+                        value.setParsed(parser.parse(value));
 
                     } catch (ParseException e) {
-                        this.errors.put(name, PARSE_ERROR);
+                        this.errors.put(key, PARSE_ERROR);
                         continue;
                     }
                 }
             }
 
-            Set<Validator> validators = this.getTemplate().getValidators().get(name);
+            Set<Validator> validators = this.getTemplate().getValidators().get(key);
             if (validators != null) {
                 for (Validator validator : validators) {
-                    if (!validator.isValid(property)) {
-                        this.errors.put(name, validator.getKey());
+                    if (!validator.isValid(value)) {
+                        this.errors.put(key, validator.getKey());
                         break;
                     }
                 }
@@ -124,10 +124,10 @@ public class Data {
             if (Reflection.isSetter(method)) {
                 String fieldName = Reflection.getNameFromSetter(method.getName());
 
-                Property property = this.getProperties().get(fieldName);
+                Value value = this.getValues().get(fieldName);
 
-                if (property != null) {
-                    Object parsed = property.getParsed();
+                if (value != null) {
+                    Object parsed = value.getParsed();
 
                     try {
                         method.invoke(object, parsed);
@@ -149,8 +149,8 @@ public class Data {
         return validated;
     }
 
-    public Map<String, Property> getProperties() {
-        return properties;
+    public Map<String, Value> getValues() {
+        return values;
     }
 
     public Map<String, String> getErrors() {
@@ -161,23 +161,23 @@ public class Data {
         return this.errors.isEmpty();
     }
 
-    public Data addProperty(String name) {
-        this.properties.put(name, new Property(this));
+    public Data add(String key) {
+        this.values.put(key, new Value(this));
         return this;
     }
 
-    public Data addProperty(String name, String value) {
-        this.properties.put(name, new Property(this, value));
+    public Data add(String key, String value) {
+        this.values.put(key, new Value(this, value));
         return this;
     }
 
-    public Data addProperty(String name, String[] values) {
-        this.properties.put(name, new Property(this, values));
+    public Data add(String key, String[] values) {
+        this.values.put(key, new Value(this, values));
         return this;
     }
 
-    public Data removeProperty(String name) {
-        this.properties.remove(name);
+    public Data remove(String key) {
+        this.values.remove(key);
         return this;
     }
 }

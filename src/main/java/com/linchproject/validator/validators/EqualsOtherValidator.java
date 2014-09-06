@@ -1,6 +1,6 @@
 package com.linchproject.validator.validators;
 
-import com.linchproject.validator.Property;
+import com.linchproject.validator.Value;
 import com.linchproject.validator.Validator;
 
 import java.util.Arrays;
@@ -10,10 +10,10 @@ import java.util.Arrays;
  */
 public class EqualsOtherValidator implements Validator {
 
-    private String propertyKey;
+    private String otherKey;
 
-    public EqualsOtherValidator(String propertyKey) {
-        this.propertyKey = propertyKey;
+    public EqualsOtherValidator(String otherKey) {
+        this.otherKey = otherKey;
     }
 
     @Override
@@ -22,10 +22,10 @@ public class EqualsOtherValidator implements Validator {
     }
 
     @Override
-    public boolean isValid(Property property) {
-        Property otherProperty = property.getData().getProperties().get(propertyKey);
+    public boolean isValid(Value value) {
+        Value otherValue = value.getData().getValues().get(this.otherKey);
 
-        String[] otherValues = otherProperty != null ? otherProperty.getValues() : null;
-        return Arrays.equals(property.getValues(), otherValues);
+        String[] otherStrings = otherValue != null ? otherValue.getStrings() : null;
+        return Arrays.equals(value.getStrings(), otherStrings);
     }
 }

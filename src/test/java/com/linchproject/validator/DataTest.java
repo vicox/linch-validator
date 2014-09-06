@@ -8,20 +8,20 @@ import java.util.Map;
 public class DataTest extends TestCase {
 
     public void testReadFrom() throws Exception {
-        Template template = new Template().setProperties(new String[]{"a"});
+        Template template = new Template().setKeys(new String[]{"a"});
         Data data;
 
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         data = template.create(map);
-        assertEquals(1, data.getProperties().size());
-        assertEquals("b", data.getProperties().get("a").getValue());
+        assertEquals(1, data.getValues().size());
+        assertEquals("b", data.getValues().get("a").getString());
 
         A a = new A();
         a.setA("b");
         data = template.create(a);
-        assertEquals(1, data.getProperties().size());
-        assertEquals("b", data.getProperties().get("a").getValue());
+        assertEquals(1, data.getValues().size());
+        assertEquals("b", data.getValues().get("a").getString());
     }
 
     public void testValidate() throws Exception {
@@ -30,37 +30,37 @@ public class DataTest extends TestCase {
         Data data;
 
         map = new HashMap<String, String[]>();
-        template = new Template().setPropertyClass(A.class);
+        template = new Template().setClazz(A.class);
         data = template.create(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
-        template = new Template().setPropertyClass(A.class).setRequired("a");
+        template = new Template().setClazz(A.class).setRequired("a");
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals("required", data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
-        template = new Template().setPropertyClass(A.class).setRequired("a");
+        template = new Template().setClazz(A.class).setRequired("a");
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Data.REQUIRED_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
-        template = new Template().setPropertyClass(B.class);
+        template = new Template().setClazz(B.class);
         data = template.create(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        template = new Template().setPropertyClass(B.class);
+        template = new Template().setClazz(B.class);
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Data.PARSER_MISSING_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        template = new Template().setPropertyClass(C.class);
+        template = new Template().setClazz(C.class);
         data = template.create(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(Data.PARSE_ERROR, data.getErrors().get("a"));
@@ -73,7 +73,7 @@ public class DataTest extends TestCase {
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        template = new Template().setPropertyClass(A.class);
+        template = new Template().setClazz(A.class);
         data = template.create(map).validate();
 
         A a = new A();

@@ -1,6 +1,6 @@
 package com.linchproject.validator.validators;
 
-import com.linchproject.validator.Property;
+import com.linchproject.validator.Value;
 import com.linchproject.validator.Validator;
 
 /**
@@ -14,9 +14,9 @@ public class EmailValidator implements Validator {
     }
 
     @Override
-    public boolean isValid(Property property) {
-        for (String value : property.getValues()) {
-            if (!value.contains("@")) {
+    public boolean isValid(Value value) {
+        for (String string : value.getStrings()) {
+            if (!string.contains("@")) {
                 return false;
             }
         }

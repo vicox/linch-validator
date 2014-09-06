@@ -5,7 +5,7 @@ package com.linchproject.validator;
  */
 public interface Parser<T> {
 
-    T parse(Property property) throws ParseException;
+    T parse(Value value) throws ParseException;
 
     String[] toStringArray(T object);
 }

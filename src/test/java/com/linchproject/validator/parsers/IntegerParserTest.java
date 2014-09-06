@@ -1,13 +1,13 @@
 package com.linchproject.validator.parsers;
 
-import com.linchproject.validator.Property;
+import com.linchproject.validator.Value;
 import junit.framework.TestCase;
 
 public class IntegerParserTest extends TestCase {
 
     public void testParse() throws Exception {
-        Property property = new Property(null, "1");
-        assertEquals(Integer.valueOf(1), new IntegerParser().parse(property));
+        Value value = new Value(null, "1");
+        assertEquals(Integer.valueOf(1), new IntegerParser().parse(value));
     }
 
     public void testToStringArray() throws Exception {
