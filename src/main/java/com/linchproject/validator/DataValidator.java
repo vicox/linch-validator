@@ -19,10 +19,14 @@ public class DataValidator {
 
     private Set<String> required = new HashSet<String>();
 
-    private Map<Class<?>, Parser> parsers = new HashMap<Class<?>, Parser>() {{
-        put(String.class, new StringParser());
-        put(Integer.class, new IntegerParser());
-    }};
+    private Map<Class<?>, Parser<?>> parsers = new HashMap<Class<?>, Parser<?>>();
+
+    private Map<String, Parser<?>> fieldParsers = new HashMap<String, Parser<?>>();
+
+    public DataValidator() {
+        addParser(new StringParser());
+        addParser(new IntegerParser());
+    }
 
     private Map<String, Set<Validator>> validators = new HashMap<String, Set<Validator>>();
 
@@ -104,8 +108,13 @@ public class DataValidator {
         return this;
     }
 
-    public DataValidator addParser(Class<?> type, Parser parser) {
-        this.parsers.put(type, parser);
+    public DataValidator addParser(Parser<?> parser) {
+        this.parsers.put(parser.getType(), parser);
+        return this;
+    }
+
+    public DataValidator addParser(String key, Parser<?> parser) {
+        this.fieldParsers.put(key, parser);
         return this;
     }
 
@@ -124,7 +133,7 @@ public class DataValidator {
     public void validate(Data data) {
         data.getErrors().clear();
 
-        for (Map.Entry<String, Value> entry: data.getValues().entrySet()) {
+        for (Map.Entry<String, Value<?>> entry: data.getValues().entrySet()) {
             String key = entry.getKey();
             Value value = entry.getValue();
 
@@ -137,7 +146,12 @@ public class DataValidator {
                 Class<?> type = this.getFieldType(key);
 
                 if (!value.isParsed()) {
-                    Parser parser = this.getParser(type);
+                    Parser<?> parser = this.getParser(key);
+
+                    if (parser == null) {
+                        parser = this.getParser(type);
+                    }
+
                     if (parser == null) {
                         data.getErrors().put(key, PARSER_MISSING_ERROR);
                         continue;
@@ -171,7 +185,11 @@ public class DataValidator {
     }
 
     public <T> Parser<T> getParser(Class<T> type) {
-        return this.parsers.get(type);
+        return (Parser<T>) this.parsers.get(type);
+    }
+
+    public <T> Parser<T> getParser(String key) {
+        return (Parser<T>) this.fieldParsers.get(key);
     }
 
     public Set<Validator> getValidators(String key) {

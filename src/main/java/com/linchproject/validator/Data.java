@@ -14,7 +14,7 @@ public class Data {
 
     private DataValidator dataValidator;
 
-    private Map<String, Value> values = new LinkedHashMap<String, Value>();
+    private Map<String, Value<?>> values = new LinkedHashMap<String, Value<?>>();
 
     private Map<String, String> errors = new LinkedHashMap<String, String>();
 
@@ -52,15 +52,20 @@ public class Data {
     public Data readFrom(Object object) {
         for (Method method: object.getClass().getDeclaredMethods()) {
             if (Reflection.isGetter(method)) {
-                String type = Reflection.getNameFromGetter(method.getName());
+                String key = Reflection.getNameFromGetter(method.getName());
 
-                Value value = this.getValues().get(type);
+                Value value = this.getValues().get(key);
                 if (value != null) {
-                    Class<?> fieldType = method.getReturnType();
+                    Class<?> type = method.getReturnType();
 
-                    Parser parser = this.getDataValidator().getParser(fieldType);
+                    Parser parser = this.getDataValidator().getParser(key);
+
                     if (parser == null) {
-                        throw new ParserNotFoundException("parser not found for " + fieldType);
+                        parser = this.getDataValidator().getParser(type);
+                    }
+
+                    if (parser == null) {
+                        throw new ParserNotFoundException("parser not found for " + type);
                     }
 
                     try {
@@ -74,8 +79,6 @@ public class Data {
                         // ignore
                     }
                 }
-
-
             }
         }
 
@@ -122,7 +125,7 @@ public class Data {
         return validated;
     }
 
-    public Map<String, Value> getValues() {
+    public Map<String, Value<?>> getValues() {
         return values;
     }
 

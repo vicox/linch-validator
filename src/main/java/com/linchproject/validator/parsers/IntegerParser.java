@@ -7,6 +7,11 @@ import com.linchproject.validator.*;
  */
 public class IntegerParser implements Parser<Integer> {
     @Override
+    public Class<Integer> getType() {
+        return Integer.class;
+    }
+
+    @Override
     public Integer parse(Value value) throws ParseException {
         try {
             return value.getString() == null ? null : Integer.parseInt(value.getString());
