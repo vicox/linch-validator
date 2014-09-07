@@ -9,7 +9,11 @@ import java.util.*;
 /**
  * @author Georg Schmidl
  */
-public class ValidationTemplate {
+public class DataValidator {
+
+    public static String REQUIRED_ERROR = "required";
+    public static String PARSER_MISSING_ERROR = "parser.not.found";
+    public static String PARSE_ERROR = "invalid.type";
 
     private Map<String, Class<?>> fields = new LinkedHashMap<String, Class<?>>();
 
@@ -42,32 +46,32 @@ public class ValidationTemplate {
         return createEmptyData().readFrom(map);
     }
 
-    public ValidationTemplate addField(String key) {
+    public DataValidator addField(String key) {
         return this.addFields(key);
     }
 
-    public ValidationTemplate addField(String key, Class<?> type) {
+    public DataValidator addField(String key, Class<?> type) {
         this.fields.put(key, type);
         return this;
     }
 
-    public ValidationTemplate addFields(String... keys) {
+    public DataValidator addFields(String... keys) {
         return addFields(Arrays.asList(keys));
     }
 
-    public ValidationTemplate addFields(Collection<String> keys, String... moreKeys) {
+    public DataValidator addFields(Collection<String> keys, String... moreKeys) {
         for (String key: keys) {
             this.fields.put(key, String.class);
         }
         return moreKeys.length > 0 ? addFields(moreKeys) : this;
     }
 
-    public ValidationTemplate addFields(Map<String, Class<?>> fields, String... keys) {
+    public DataValidator addFields(Map<String, Class<?>> fields, String... keys) {
         this.fields.putAll(fields);
         return keys.length > 0 ? addFields(keys) : this;
     }
 
-    public ValidationTemplate addFields(Class<?> clazz, String... keys) {
+    public DataValidator addFields(Class<?> clazz, String... keys) {
         for (Method method: clazz.getDeclaredMethods()) {
             if (Reflection.isGetter(method)) {
                 String key = Reflection.getNameFromGetter(method.getName());
@@ -78,11 +82,11 @@ public class ValidationTemplate {
         return keys.length > 0 ? addFields(keys) : this;
     }
 
-    public ValidationTemplate removeField(String key) {
+    public DataValidator removeField(String key) {
         return removeFields(key);
     }
 
-    public ValidationTemplate removeFields(String... keys) {
+    public DataValidator removeFields(String... keys) {
         for (String key: keys) {
             this.fields.remove(key);
         }
@@ -93,31 +97,31 @@ public class ValidationTemplate {
         return this.fields.get(key);
     }
 
-    public ValidationTemplate setRequired(String key) {
+    public DataValidator setRequired(String key) {
         this.required.add(key);
         return this;
     }
 
-    public ValidationTemplate setRequired(String... keys) {
+    public DataValidator setRequired(String... keys) {
         Collections.addAll(this.required, keys);
         return this;
     }
 
-    public ValidationTemplate setAllRequired() {
+    public DataValidator setAllRequired() {
         this.required.addAll(fields.keySet());
         return this;
     }
 
-    public ValidationTemplate addParser(Class<?> type, Parser parser) {
+    public DataValidator addParser(Class<?> type, Parser parser) {
         this.parsers.put(type, parser);
         return this;
     }
 
-    public ValidationTemplate addValidator(String key, Validator validator) {
+    public DataValidator addValidator(String key, Validator validator) {
         return this.addValidators(key, validator);
     }
 
-    public ValidationTemplate addValidators(String key, Validator... validators) {
+    public DataValidator addValidators(String key, Validator... validators) {
         if (this.validators.get(key) == null) {
             this.validators.put(key, new HashSet<Validator>());
         }
@@ -125,12 +129,53 @@ public class ValidationTemplate {
         return this;
     }
 
+    public void validate(Data data) {
+        data.getErrors().clear();
+
+        for (Map.Entry<String, Value> entry: data.getValues().entrySet()) {
+            String key = entry.getKey();
+            Value value = entry.getValue();
+
+            if (this.isRequired(key) && value.isEmpty()) {
+                data.getErrors().put(key, REQUIRED_ERROR);
+                continue;
+            }
+
+            if (!value.isEmpty()) {
+                Class<?> type = this.getFieldType(key);
+
+                if (!value.isParsed()) {
+                    Parser parser = this.getParser(type);
+                    if (parser == null) {
+                        data.getErrors().put(key, PARSER_MISSING_ERROR);
+                        continue;
+                    }
+
+                    try {
+                        value.setParsed(parser.parse(value));
+
+                    } catch (ParseException e) {
+                        data.getErrors().put(key, PARSE_ERROR);
+                        continue;
+                    }
+                }
+            }
+
+            for (Validator validator : this.getValidators(key)) {
+                if (!validator.isValid(value)) {
+                    data.getErrors().put(key, validator.getKey());
+                    break;
+                }
+            }
+        }
+    }
+
     public boolean isRequired(String key) {
         return this.required.contains(key);
     }
 
     public <T> Parser<T> getParser(Class<T> type) {
-        return parsers.get(type);
+        return this.parsers.get(type);
     }
 
     public Set<Validator> getValidators(String key) {

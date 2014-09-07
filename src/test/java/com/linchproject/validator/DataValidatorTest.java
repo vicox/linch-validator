@@ -2,13 +2,13 @@ package com.linchproject.validator;
 
 import junit.framework.TestCase;
 
-public class ValidationTemplateTest extends TestCase {
+public class DataValidatorTest extends TestCase {
 
     public void testCreate() throws Exception {
-        ValidationTemplate validationTemplate = new ValidationTemplate().addFields(A.class);
+        DataValidator dataValidator = new DataValidator().addFields(A.class);
         Data data;
 
-        data = validationTemplate.createEmptyData();
+        data = dataValidator.createEmptyData();
         assertEquals(1, data.getValues().size());
         assertNull(data.getValues().get("a").getString());
     }

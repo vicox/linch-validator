@@ -8,73 +8,73 @@ import java.util.Map;
 public class DataTest extends TestCase {
 
     public void testReadFrom() throws Exception {
-        ValidationTemplate validationTemplate = new ValidationTemplate().addFields("a");
+        DataValidator dataValidator = new DataValidator().addFields("a");
         Data data;
 
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        data = validationTemplate.createDataFrom(map);
+        data = dataValidator.createDataFrom(map);
         assertEquals(1, data.getValues().size());
         assertEquals("b", data.getValues().get("a").getString());
 
         A a = new A();
         a.setA("b");
-        data = validationTemplate.createDataFrom(a);
+        data = dataValidator.createDataFrom(a);
         assertEquals(1, data.getValues().size());
         assertEquals("b", data.getValues().get("a").getString());
     }
 
     public void testValidate() throws Exception {
         Map<String, String[]> map;
-        ValidationTemplate validationTemplate;
+        DataValidator dataValidator;
         Data data;
 
         map = new HashMap<String, String[]>();
-        validationTemplate = new ValidationTemplate().addFields(A.class);
-        data = validationTemplate.createDataFrom(map).validate();
+        dataValidator = new DataValidator().addFields(A.class);
+        data = dataValidator.createDataFrom(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
-        validationTemplate = new ValidationTemplate().addFields(A.class).setRequired("a");
-        data = validationTemplate.createDataFrom(map).validate();
+        dataValidator = new DataValidator().addFields(A.class).setRequired("a");
+        data = dataValidator.createDataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals("required", data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
-        validationTemplate = new ValidationTemplate().addFields(A.class).setRequired("a");
-        data = validationTemplate.createDataFrom(map).validate();
+        dataValidator = new DataValidator().addFields(A.class).setRequired("a");
+        data = dataValidator.createDataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
-        assertEquals(Data.REQUIRED_ERROR, data.getErrors().get("a"));
+        assertEquals(DataValidator.REQUIRED_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
-        validationTemplate = new ValidationTemplate().addFields(B.class);
-        data = validationTemplate.createDataFrom(map).validate();
+        dataValidator = new DataValidator().addFields(B.class);
+        data = dataValidator.createDataFrom(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        validationTemplate = new ValidationTemplate().addFields(B.class);
-        data = validationTemplate.createDataFrom(map).validate();
+        dataValidator = new DataValidator().addFields(B.class);
+        data = dataValidator.createDataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
-        assertEquals(Data.PARSER_MISSING_ERROR, data.getErrors().get("a"));
+        assertEquals(DataValidator.PARSER_MISSING_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        validationTemplate = new ValidationTemplate().addFields(C.class);
-        data = validationTemplate.createDataFrom(map).validate();
+        dataValidator = new DataValidator().addFields(C.class);
+        data = dataValidator.createDataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
-        assertEquals(Data.PARSE_ERROR, data.getErrors().get("a"));
+        assertEquals(DataValidator.PARSE_ERROR, data.getErrors().get("a"));
     }
 
     public void testWriteTo() throws Exception {
         Map<String, String[]> map;
-        ValidationTemplate validationTemplate;
+        DataValidator dataValidator;
         Data data;
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        validationTemplate = new ValidationTemplate().addFields(A.class);
-        data = validationTemplate.createDataFrom(map).validate();
+        dataValidator = new DataValidator().addFields(A.class);
+        data = dataValidator.createDataFrom(map).validate();
 
         A a = new A();
         assertNull(a.getA());
@@ -85,8 +85,8 @@ public class DataTest extends TestCase {
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"a"});
         map.put("b", new String[]{"b"});
-        validationTemplate = new ValidationTemplate().addFields(AB.class);
-        data = validationTemplate.createDataFrom(map).validate();
+        dataValidator = new DataValidator().addFields(AB.class);
+        data = dataValidator.createDataFrom(map).validate();
         AB ab = new AB();
         data.writeTo(ab, "a");
         assertEquals("a", ab.getA());

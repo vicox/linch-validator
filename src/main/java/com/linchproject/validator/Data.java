@@ -12,11 +12,7 @@ import java.util.Map;
  */
 public class Data {
 
-    public static String REQUIRED_ERROR = "required";
-    public static String PARSER_MISSING_ERROR = "parser.not.found";
-    public static String PARSE_ERROR = "invalid.type";
-
-    private ValidationTemplate validationTemplate;
+    private DataValidator dataValidator;
 
     private Map<String, Value> values = new LinkedHashMap<String, Value>();
 
@@ -24,8 +20,8 @@ public class Data {
 
     private boolean validated;
 
-    public Data(ValidationTemplate validationTemplate) {
-        this.validationTemplate = validationTemplate;
+    public Data(DataValidator dataValidator) {
+        this.dataValidator = dataValidator;
     }
 
     public Data set(String key, String... strings) {
@@ -55,7 +51,7 @@ public class Data {
                 if (value != null) {
                     Class<?> fieldType = method.getReturnType();
 
-                    Parser parser = this.getValidationTemplate().getParser(fieldType);
+                    Parser parser = this.getDataValidator().getParser(fieldType);
                     if (parser == null) {
                         throw new ParserNotFoundException("parser not found for " + fieldType);
                     }
@@ -80,43 +76,7 @@ public class Data {
     }
 
     public Data validate() {
-        for (Map.Entry<String, Value> entry: this.values.entrySet()) {
-            String key = entry.getKey();
-            Value value = entry.getValue();
-            
-            if (this.getValidationTemplate().isRequired(key) && value.isEmpty()) {
-                this.errors.put(key, REQUIRED_ERROR);
-                continue;
-            }
-
-            if (!value.isEmpty()) {
-                Class<?> type = getValidationTemplate().getFieldType(key);
-
-                if (!value.isParsed()) {
-                    Parser parser = this.getValidationTemplate().getParser(type);
-                    if (parser == null) {
-                        this.errors.put(key, PARSER_MISSING_ERROR);
-                        continue;
-                    }
-
-                    try {
-                        value.setParsed(parser.parse(value));
-
-                    } catch (ParseException e) {
-                        this.errors.put(key, PARSE_ERROR);
-                        continue;
-                    }
-                }
-            }
-
-            for (Validator validator : this.getValidationTemplate().getValidators(key)) {
-                if (!validator.isValid(value)) {
-                    this.errors.put(key, validator.getKey());
-                    break;
-                }
-            }
-        }
-
+        this.dataValidator.validate(this);
         this.validated = true;
         return this;
     }
@@ -147,8 +107,8 @@ public class Data {
         }
     }
 
-    public ValidationTemplate getValidationTemplate() {
-        return validationTemplate;
+    public DataValidator getDataValidator() {
+        return dataValidator;
     }
 
     public boolean isValidated() {
