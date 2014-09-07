@@ -18,8 +18,6 @@ public class Data {
 
     private Map<String, String> errors = new LinkedHashMap<String, String>();
 
-    private boolean validated;
-
     public Data() {
         this(new DataValidator());
     }
@@ -87,7 +85,6 @@ public class Data {
 
     public Data validate() {
         this.dataValidator.validate(this);
-        this.validated = true;
         return this;
     }
 
@@ -119,10 +116,6 @@ public class Data {
 
     public DataValidator getDataValidator() {
         return dataValidator;
-    }
-
-    public boolean isValidated() {
-        return validated;
     }
 
     public Map<String, Value<?>> getValues() {
