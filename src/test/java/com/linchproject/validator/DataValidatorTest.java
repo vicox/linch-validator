@@ -8,7 +8,7 @@ public class DataValidatorTest extends TestCase {
         DataValidator dataValidator = new DataValidator().addFields(A.class);
         Data data;
 
-        data = dataValidator.createEmptyData();
+        data = dataValidator.emptyData();
         assertEquals(1, data.getValues().size());
         assertNull(data.getValues().get("a").getString());
     }

@@ -26,16 +26,16 @@ public class DataValidator {
 
     private Map<String, Set<Validator>> validators = new HashMap<String, Set<Validator>>();
 
-    public Data createEmptyData() {
+    public Data emptyData() {
         return new Data(this);
     }
 
-    public Data createDataFrom(Object object) {
-        return createEmptyData().readFrom(object);
+    public Data dataFrom(Object object) {
+        return emptyData().readFrom(object);
     }
 
-    public Data createDataFrom(Map<String, String[]> map) {
-        return createEmptyData().readFrom(map);
+    public Data dataFrom(Map<String, String[]> map) {
+        return emptyData().readFrom(map);
     }
 
     public DataValidator addField(String key) {

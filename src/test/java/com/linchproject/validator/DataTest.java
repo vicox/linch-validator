@@ -13,13 +13,13 @@ public class DataTest extends TestCase {
 
         Map<String, String[]> map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
-        data = dataValidator.createDataFrom(map);
+        data = dataValidator.dataFrom(map);
         assertEquals(1, data.getValues().size());
         assertEquals("b", data.getValues().get("a").getString());
 
         A a = new A();
         a.setA("b");
-        data = dataValidator.createDataFrom(a);
+        data = dataValidator.dataFrom(a);
         assertEquals(1, data.getValues().size());
         assertEquals("b", data.getValues().get("a").getString());
     }
@@ -31,37 +31,37 @@ public class DataTest extends TestCase {
 
         map = new HashMap<String, String[]>();
         dataValidator = new DataValidator().addFields(A.class);
-        data = dataValidator.createDataFrom(map).validate();
+        data = dataValidator.dataFrom(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         dataValidator = new DataValidator().addFields(A.class).setRequired("a");
-        data = dataValidator.createDataFrom(map).validate();
+        data = dataValidator.dataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals("required", data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         dataValidator = new DataValidator().addFields(A.class).setRequired("a");
-        data = dataValidator.createDataFrom(map).validate();
+        data = dataValidator.dataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(DataValidator.REQUIRED_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         dataValidator = new DataValidator().addFields(B.class);
-        data = dataValidator.createDataFrom(map).validate();
+        data = dataValidator.dataFrom(map).validate();
         assertEquals(0, data.getErrors().size());
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         dataValidator = new DataValidator().addFields(B.class);
-        data = dataValidator.createDataFrom(map).validate();
+        data = dataValidator.dataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(DataValidator.PARSER_MISSING_ERROR, data.getErrors().get("a"));
 
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         dataValidator = new DataValidator().addFields(C.class);
-        data = dataValidator.createDataFrom(map).validate();
+        data = dataValidator.dataFrom(map).validate();
         assertEquals(1, data.getErrors().size());
         assertEquals(DataValidator.PARSE_ERROR, data.getErrors().get("a"));
     }
@@ -74,7 +74,7 @@ public class DataTest extends TestCase {
         map = new HashMap<String, String[]>();
         map.put("a", new String[]{"b"});
         dataValidator = new DataValidator().addFields(A.class);
-        data = dataValidator.createDataFrom(map).validate();
+        data = dataValidator.dataFrom(map).validate();
 
         A a = new A();
         assertNull(a.getA());
@@ -86,7 +86,7 @@ public class DataTest extends TestCase {
         map.put("a", new String[]{"a"});
         map.put("b", new String[]{"b"});
         dataValidator = new DataValidator().addFields(AB.class);
-        data = dataValidator.createDataFrom(map).validate();
+        data = dataValidator.dataFrom(map).validate();
         AB ab = new AB();
         data.writeTo(ab, "a");
         assertEquals("a", ab.getA());
