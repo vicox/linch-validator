@@ -27,15 +27,7 @@ public class DataValidator {
     private Map<String, Set<Validator>> validators = new HashMap<String, Set<Validator>>();
 
     public Data createEmptyData() {
-        Data data = new Data(this);
-
-        if (this.fields != null) {
-            for (String key: this.fields.keySet()) {
-                data.add(key);
-            }
-        }
-
-        return data;
+        return new Data(this);
     }
 
     public Data createDataFrom(Object object) {
@@ -168,6 +160,10 @@ public class DataValidator {
                 }
             }
         }
+    }
+
+    public Set<String> getFieldKeys() {
+        return this.fields == null ? Collections.<String>emptySet() : this.fields.keySet();
     }
 
     public boolean isRequired(String key) {

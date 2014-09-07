@@ -10,11 +10,11 @@ public class EqualsOtherValidatorTest extends TestCase {
         Data data;
         Value value;
 
-        data = new Data(null).add("c", "d");
+        data = new Data().add("c", "d");
         value = new Value(data, "b");
         assertFalse(new EqualsOtherValidator("c").isValid(value));
 
-        data = new Data(null).add("c", "b");
+        data = new Data().add("c", "b");
         value = new Value(data, "b");
         assertTrue(new EqualsOtherValidator("c").isValid(value));
     }

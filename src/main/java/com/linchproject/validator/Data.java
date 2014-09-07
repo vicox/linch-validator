@@ -20,7 +20,14 @@ public class Data {
 
     private boolean validated;
 
+    public Data() {
+        this(new DataValidator());
+    }
+
     public Data(DataValidator dataValidator) {
+        for (String key: dataValidator.getFieldKeys()) {
+            this.add(key);
+        }
         this.dataValidator = dataValidator;
     }
 
