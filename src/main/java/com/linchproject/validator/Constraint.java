@@ -11,7 +11,7 @@ public interface Constraint {
 
         private static Result OK = new Result(null);
 
-        Error error;
+        private Error error;
 
         protected Result(Error error) {
             this.error = error;
