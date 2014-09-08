@@ -12,10 +12,10 @@ public class EqualsOtherConstraintTest extends TestCase {
 
         data = new Data().add("c", "d");
         value = new Value(data, "b");
-        assertFalse(new EqualsOtherConstraint("c").isValid(value));
+        assertFalse(new EqualsOtherConstraint("c").check(value).isOk());
 
         data = new Data().add("c", "b");
         value = new Value(data, "b");
-        assertTrue(new EqualsOtherConstraint("c").isValid(value));
+        assertTrue(new EqualsOtherConstraint("c").check(value).isOk());
     }
 }

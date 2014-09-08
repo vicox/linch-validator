@@ -9,17 +9,12 @@ import com.linchproject.validator.Constraint;
 public class EmailConstraint implements Constraint {
 
     @Override
-    public String getKey() {
-        return "email";
-    }
-
-    @Override
-    public boolean isValid(Value value) {
+    public Result check(Value value) {
         for (String string : value.getStrings()) {
             if (!string.contains("@")) {
-                return false;
+                return Result.error("email.invalid");
             }
         }
-        return true;
+        return Result.ok();
     }
 }

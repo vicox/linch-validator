@@ -17,15 +17,11 @@ public class EqualsOtherConstraint implements Constraint {
     }
 
     @Override
-    public String getKey() {
-        return "equals";
-    }
-
-    @Override
-    public boolean isValid(Value value) {
+    public Result check(Value value) {
         Value otherValue = value.getData().getValues().get(this.otherKey);
 
+        String[] strings = value.getStrings();
         String[] otherStrings = otherValue != null ? otherValue.getStrings() : null;
-        return Arrays.equals(value.getStrings(), otherStrings);
+        return Arrays.equals(strings, otherStrings) ? Result.ok() : Result.error("not.equals.other", this.otherKey);
     }
 }

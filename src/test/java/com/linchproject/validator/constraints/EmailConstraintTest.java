@@ -9,9 +9,9 @@ public class EmailConstraintTest extends TestCase {
         Value value;
 
         value = new Value(null, "a");
-        assertFalse(new EmailConstraint().isValid(value));
+        assertFalse(new EmailConstraint().check(value).isOk());
 
         value = new Value(null, "a@example.com");
-        assertTrue(new EmailConstraint().isValid(value));
+        assertTrue(new EmailConstraint().check(value).isOk());
     }
 }
