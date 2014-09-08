@@ -1,10 +1,10 @@
-package com.linchproject.validator.validators;
+package com.linchproject.validator.constraints;
 
 import com.linchproject.validator.Data;
 import com.linchproject.validator.Value;
 import junit.framework.TestCase;
 
-public class EqualsOtherValidatorTest extends TestCase {
+public class EqualsOtherConstraintTest extends TestCase {
 
     public void testIsValid() throws Exception {
         Data data;
@@ -12,10 +12,10 @@ public class EqualsOtherValidatorTest extends TestCase {
 
         data = new Data().add("c", "d");
         value = new Value(data, "b");
-        assertFalse(new EqualsOtherValidator("c").isValid(value));
+        assertFalse(new EqualsOtherConstraint("c").isValid(value));
 
         data = new Data().add("c", "b");
         value = new Value(data, "b");
-        assertTrue(new EqualsOtherValidator("c").isValid(value));
+        assertTrue(new EqualsOtherConstraint("c").isValid(value));
     }
 }

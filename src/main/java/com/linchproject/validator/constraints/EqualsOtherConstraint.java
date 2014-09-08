@@ -1,18 +1,18 @@
-package com.linchproject.validator.validators;
+package com.linchproject.validator.constraints;
 
 import com.linchproject.validator.Value;
-import com.linchproject.validator.Validator;
+import com.linchproject.validator.Constraint;
 
 import java.util.Arrays;
 
 /**
  * @author Georg Schmidl
  */
-public class EqualsOtherValidator implements Validator {
+public class EqualsOtherConstraint implements Constraint {
 
     private String otherKey;
 
-    public EqualsOtherValidator(String otherKey) {
+    public EqualsOtherConstraint(String otherKey) {
         this.otherKey = otherKey;
     }
 

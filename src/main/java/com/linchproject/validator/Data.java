@@ -12,21 +12,21 @@ import java.util.Map;
  */
 public class Data {
 
-    private DataValidator dataValidator;
+    private Validator validator;
 
     private Map<String, Value<?>> values = new LinkedHashMap<String, Value<?>>();
 
     private Map<String, String> errors = new LinkedHashMap<String, String>();
 
     public Data() {
-        this(new DataValidator());
+        this(new Validator());
     }
 
-    public Data(DataValidator dataValidator) {
-        for (String key: dataValidator.getFieldKeys()) {
+    public Data(Validator validator) {
+        for (String key: validator.getFieldKeys()) {
             this.add(key);
         }
-        this.dataValidator = dataValidator;
+        this.validator = validator;
     }
 
     public Data set(String key, String... strings) {
@@ -56,10 +56,10 @@ public class Data {
                 if (value != null) {
                     Class<?> type = method.getReturnType();
 
-                    Parser parser = this.getDataValidator().getParser(key);
+                    Parser parser = this.getValidator().getParser(key);
 
                     if (parser == null) {
-                        parser = this.getDataValidator().getParser(type);
+                        parser = this.getValidator().getParser(type);
                     }
 
                     if (parser == null) {
@@ -84,7 +84,7 @@ public class Data {
     }
 
     public Data validate() {
-        this.dataValidator.validate(this);
+        this.validator.validate(this);
         return this;
     }
 
@@ -114,8 +114,8 @@ public class Data {
         }
     }
 
-    public DataValidator getDataValidator() {
-        return dataValidator;
+    public Validator getValidator() {
+        return validator;
     }
 
     public Map<String, Value<?>> getValues() {

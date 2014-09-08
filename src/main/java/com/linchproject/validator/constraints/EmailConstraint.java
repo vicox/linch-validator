@@ -1,12 +1,12 @@
-package com.linchproject.validator.validators;
+package com.linchproject.validator.constraints;
 
 import com.linchproject.validator.Value;
-import com.linchproject.validator.Validator;
+import com.linchproject.validator.Constraint;
 
 /**
  * @author Georg Schmidl
  */
-public class EmailValidator implements Validator {
+public class EmailConstraint implements Constraint {
 
     @Override
     public String getKey() {

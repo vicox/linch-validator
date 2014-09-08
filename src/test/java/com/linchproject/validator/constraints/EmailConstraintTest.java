@@ -1,17 +1,17 @@
-package com.linchproject.validator.validators;
+package com.linchproject.validator.constraints;
 
 import com.linchproject.validator.Value;
 import junit.framework.TestCase;
 
-public class EmailValidatorTest extends TestCase {
+public class EmailConstraintTest extends TestCase {
 
     public void testIsValid() throws Exception {
         Value value;
 
         value = new Value(null, "a");
-        assertFalse(new EmailValidator().isValid(value));
+        assertFalse(new EmailConstraint().isValid(value));
 
         value = new Value(null, "a@example.com");
-        assertTrue(new EmailValidator().isValid(value));
+        assertTrue(new EmailConstraint().isValid(value));
     }
 }
