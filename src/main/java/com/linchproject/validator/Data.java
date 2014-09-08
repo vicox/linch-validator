@@ -16,7 +16,7 @@ public class Data {
 
     private Map<String, Value<?>> values = new LinkedHashMap<String, Value<?>>();
 
-    private Map<String, ErrorMessage> errors = new LinkedHashMap<String, ErrorMessage>();
+    private Map<String, Error> errors = new LinkedHashMap<String, Error>();
 
     public Data() {
         this(new Validator());
@@ -137,7 +137,7 @@ public class Data {
         return value == null ? null : (T) value.getParsed();
     }
 
-    public Map<String, ErrorMessage> getErrors() {
+    public Map<String, Error> getErrors() {
         return errors;
     }
 

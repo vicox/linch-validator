@@ -45,7 +45,7 @@ public class DataTest extends TestCase {
         Data data = validator.dataFrom(map).validate();
 
         assertEquals(1, data.getErrors().size());
-        assertEquals(Validator.REQUIRED_ERROR_MESSAGE, data.getErrors().get("a"));
+        assertEquals(Validator.REQUIRED_ERROR, data.getErrors().get("a"));
     }
 
     public void testValidateParserNoValue() throws Exception {
@@ -63,7 +63,7 @@ public class DataTest extends TestCase {
         Data data = validator.dataFrom(map).validate();
 
         assertEquals(1, data.getErrors().size());
-        assertEquals(Validator.PARSER_MISSING_ERROR_MESSAGE, data.getErrors().get("a"));
+        assertEquals(Validator.PARSER_MISSING_ERROR, data.getErrors().get("a"));
     }
 
     public void testValidateParseError() throws Exception {
@@ -73,7 +73,7 @@ public class DataTest extends TestCase {
         Data data = validator.dataFrom(map).validate();
 
         assertEquals(1, data.getErrors().size());
-        assertEquals(Validator.PARSE_ERROR_MESSAGE, data.getErrors().get("a"));
+        assertEquals(Validator.PARSE_ERROR, data.getErrors().get("a"));
     }
 
     public void testValidateParser() throws Exception {

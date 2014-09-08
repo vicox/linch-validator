@@ -3,15 +3,16 @@ package com.linchproject.validator;
 /**
  * @author Georg Schmidl
  */
-public class ErrorMessage {
+public class Error {
+
     private String key;
     private Object[] arguments;
 
-    public ErrorMessage(String key) {
+    public Error(String key) {
         this(key, new Object[]{});
     }
 
-    public ErrorMessage(String key, Object[] arguments) {
+    public Error(String key, Object[] arguments) {
         this.key = key;
         this.arguments = arguments;
     }

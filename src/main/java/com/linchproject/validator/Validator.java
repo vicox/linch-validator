@@ -11,9 +11,9 @@ import java.util.*;
  */
 public class Validator {
 
-    public static ErrorMessage REQUIRED_ERROR_MESSAGE = new ErrorMessage("required");
-    public static ErrorMessage PARSER_MISSING_ERROR_MESSAGE = new ErrorMessage("parser.not.found");
-    public static ErrorMessage PARSE_ERROR_MESSAGE = new ErrorMessage("invalid.type");
+    public static Error REQUIRED_ERROR = new Error("required");
+    public static Error PARSER_MISSING_ERROR = new Error("parser.not.found");
+    public static Error PARSE_ERROR = new Error("invalid.type");
 
     private Map<String, Class<?>> fields = new LinkedHashMap<String, Class<?>>();
 
@@ -138,7 +138,7 @@ public class Validator {
             Value value = entry.getValue();
 
             if (this.isRequired(key) && value.isEmpty()) {
-                data.getErrors().put(key, REQUIRED_ERROR_MESSAGE);
+                data.getErrors().put(key, REQUIRED_ERROR);
                 continue;
             }
 
@@ -153,7 +153,7 @@ public class Validator {
                     }
 
                     if (parser == null) {
-                        data.getErrors().put(key, PARSER_MISSING_ERROR_MESSAGE);
+                        data.getErrors().put(key, PARSER_MISSING_ERROR);
                         continue;
                     }
 
@@ -161,7 +161,7 @@ public class Validator {
                         value.setParsed(parser.parse(value));
 
                     } catch (ParseException e) {
-                        data.getErrors().put(key, PARSE_ERROR_MESSAGE);
+                        data.getErrors().put(key, PARSE_ERROR);
                         continue;
                     }
                 }
@@ -170,7 +170,7 @@ public class Validator {
             for (Constraint constraint : this.getValidators(key)) {
                 Constraint.Result result = constraint.check(value);
                 if (!result.isOk()) {
-                    data.getErrors().put(key, result.getErrorMessage());
+                    data.getErrors().put(key, result.getError());
                     break;
                 }
             }

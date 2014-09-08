@@ -11,18 +11,18 @@ public interface Constraint {
 
         private static Result OK = new Result(null);
 
-        ErrorMessage errorMessage;
+        Error error;
 
-        protected Result(ErrorMessage errorMessage) {
-            this.errorMessage = errorMessage;
+        protected Result(Error error) {
+            this.error = error;
         }
 
         public boolean isOk() {
-            return errorMessage == null;
+            return error == null;
         }
 
-        public ErrorMessage getErrorMessage() {
-            return errorMessage;
+        public Error getError() {
+            return error;
         }
 
         public static Result ok() {
@@ -30,11 +30,11 @@ public interface Constraint {
         }
 
         public static Result error(String messageKey) {
-            return new Result(new ErrorMessage(messageKey));
+            return new Result(new Error(messageKey));
         }
 
         public static Result error(String messageKey, Object... messageArguments) {
-            return new Result(new ErrorMessage(messageKey, messageArguments));
+            return new Result(new Error(messageKey, messageArguments));
         }
     }
 
