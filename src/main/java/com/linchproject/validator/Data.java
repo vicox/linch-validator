@@ -14,7 +14,9 @@ public class Data {
 
     private Validator validator;
 
-    private Map<String, Value<?>> values = new LinkedHashMap<String, Value<?>>();
+    private Map<String, Value> values = new LinkedHashMap<String, Value>();
+
+    private Map<String, Object> objects = new LinkedHashMap<String, Object>();
 
     private Map<String, Error> errors = new LinkedHashMap<String, Error>();
 
@@ -88,21 +90,19 @@ public class Data {
         return this;
     }
 
-    public void writeTo(Object object, String... keys) {
+    public void writeTo(Object bean, String... keys) {
         List<String> keyList = Arrays.asList(keys);
 
-        for (Method method: object.getClass().getDeclaredMethods()) {
+        for (Method method: bean.getClass().getDeclaredMethods()) {
             if (Reflection.isSetter(method)) {
                 String fieldName = Reflection.getNameFromSetter(method.getName());
 
                 if (keyList.isEmpty() || keyList.contains(fieldName)) {
-                    Value value = this.getValues().get(fieldName);
+                    Object object = this.getObjects().get(fieldName);
 
-                    if (value != null) {
-                        Object parsed = value.getParsed();
-
+                    if (object != null) {
                         try {
-                            method.invoke(object, parsed);
+                            method.invoke(bean, object);
                         } catch (IllegalAccessException e) {
                             // ignore
                         } catch (InvocationTargetException e) {
@@ -118,8 +118,12 @@ public class Data {
         return validator;
     }
 
-    public Map<String, Value<?>> getValues() {
+    public Map<String, Value> getValues() {
         return values;
+    }
+
+    public Map<String, Object> getObjects() {
+        return objects;
     }
 
     public String getString(String key) {
@@ -133,8 +137,7 @@ public class Data {
     }
 
     public <T> T get(String key) {
-        Value value = this.values.get(key);
-        return value == null ? null : (T) value.getParsed();
+        return (T) this.objects.get(key);
     }
 
     public Map<String, Error> getErrors() {

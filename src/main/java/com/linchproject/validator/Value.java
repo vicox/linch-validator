@@ -6,15 +6,11 @@ import java.util.Iterator;
 /**
  * @author Georg Schmidl
  */
-public class Value<T> implements Iterable<String> {
+public class Value implements Iterable<String> {
 
     private Data data;
 
     private String[] strings;
-
-    private T parsed;
-
-    private boolean isParsed = false;
 
     public Value(Data data) {
         this.data = data;
@@ -44,21 +40,6 @@ public class Value<T> implements Iterable<String> {
 
     public void setStrings(String... strings) {
         this.strings = strings;
-        this.parsed = null;
-        this.isParsed = false;
-    }
-
-    public boolean isParsed() {
-        return isParsed;
-    }
-
-    public T getParsed() {
-        return parsed;
-    }
-
-    public void setParsed(T parsed) {
-        this.parsed = parsed;
-        this.isParsed = true;
     }
 
     boolean isEmpty() {

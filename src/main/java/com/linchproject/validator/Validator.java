@@ -133,7 +133,7 @@ public class Validator {
     public void validate(Data data) {
         data.getErrors().clear();
 
-        for (Map.Entry<String, Value<?>> entry: data.getValues().entrySet()) {
+        for (Map.Entry<String, Value> entry: data.getValues().entrySet()) {
             String key = entry.getKey();
             Value value = entry.getValue();
 
@@ -145,25 +145,23 @@ public class Validator {
             if (!value.isEmpty()) {
                 Class<?> type = this.getFieldType(key);
 
-                if (!value.isParsed()) {
-                    Parser<?> parser = this.getParser(key);
+                Parser<?> parser = this.getParser(key);
 
-                    if (parser == null) {
-                        parser = this.getParser(type);
-                    }
+                if (parser == null) {
+                    parser = this.getParser(type);
+                }
 
-                    if (parser == null) {
-                        data.getErrors().put(key, PARSER_MISSING_ERROR);
-                        continue;
-                    }
+                if (parser == null) {
+                    data.getErrors().put(key, PARSER_MISSING_ERROR);
+                    continue;
+                }
 
-                    try {
-                        value.setParsed(parser.parse(value));
+                try {
+                    data.getObjects().put(key, parser.parse(value));
 
-                    } catch (ParseException e) {
-                        data.getErrors().put(key, PARSE_ERROR);
-                        continue;
-                    }
+                } catch (ParseException e) {
+                    data.getErrors().put(key, PARSE_ERROR);
+                    continue;
                 }
             }
 
